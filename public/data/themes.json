@@ -1,0 +1,7 @@
+[
+	{ "name": "Light", "colors": "#8C2A3C #D9C1B4 #D9C1B4 #26181A" },
+	{ "name": "Dark", "colors": "#8C2A3C #D9C1B4 #181926 #525473" },
+	{ "name": "Gray", "colors": "#262626 #BFBFBF #595959 #0D0D0D" },
+	{ "name": "Grean line", "colors": "#1F7363 #C7D1D9 #A4B3BF #3F3F40" },
+	{ "name": "Tm", "colors": "#260919 #735c68 #8C6973 #39131E" }
+]

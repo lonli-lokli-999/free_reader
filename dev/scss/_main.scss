@@ -1,0 +1,193 @@
+/*
+ * main
+ *===========================================*/
+.main-content-wrap {
+flex: 1;
+height: calc( 100vh - 3rem ); }
+
+    .main-content {
+    color: var( --content-color );
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    }
+/*
+ * main end
+ *===========================================*/
+
+/*
+ * logo
+ *===========================================*/
+    .emblem {
+    position: relative;
+    background: var( --content-bg );
+    padding: 9rem 6rem;
+    margin: 0 auto;
+    border-radius: .5rem;
+    box-shadow: .3rem .3rem .5rem var( --content-color );
+    animation: emblemShow .5s; }
+
+		.emblem:before {
+		position: absolute;
+		top: calc( 100% + 1rem );
+		dispaly: block;
+		text-align: center;
+		font-size: 2rem;
+		left: 0;
+		content: 'Free reader';
+		width: 100%;
+		animation: emblemShow 2s;
+		animation: emblemLabelRotate 3s; }
+
+		.spine {
+		position: absolute;
+		top: 0;
+		left: 0;
+		background: var( --header-bg );
+		border-radius: .5rem;
+		width: 3rem;
+		height: 100%;
+		animation: spineShow 1.5s; }
+
+			.bookmark {
+			position: absolute;
+			top: 0;
+			left: 8rem;
+			width: 2rem;
+			height: 70%;
+			background: var( --header-bg );
+			animation: bookmarkShow 1s; }
+
+			.bookmark:before {
+			content: '';
+			display: block;
+			position: absolute;
+			top: 100%;
+			left: 0;
+			border-top: 1rem solid var( --header-bg );
+			border-right: 1rem solid transparent; }
+
+			.bookmark:after {
+			content: '';
+			display: block;
+			position: absolute;
+			top: 100%;
+			left: 1rem;
+			border-top: 1rem solid var( --header-bg );
+			border-left: 1rem solid transparent; }
+/*
+ * logo end
+ *===========================================*/
+			
+/*
+ * reading status bar
+ *===========================================*/
+.reading-status-grafic {
+position: fixed;
+bottom: 0;
+left: 0;
+width: calc( 100% - 6rem );
+height: .4rem;
+margin: 0 3rem;
+background: var( --content-bg );
+box-shadow: 0 0 .5rem var( --content-color );
+opacity: 0;
+transition: .5s;
+}
+
+.reading-status-grafic:hover,
+.reading-status-grafic--active {
+opacity: .7;
+height: 1rem;
+}
+
+    .reading-status-grafic__progress-line {
+    display: block;
+    padding: .5rem 0;
+    background: var( --header-bg );
+    width: 0;
+    }
+/*
+ * reading status bar end
+ *===========================================*/
+
+/*
+ * book tipografy
+ *===========================================*/
+.book {
+flex: 1;
+max-height: calc( 100vh - 3rem );
+overflow: auto;
+scrollbar-width: none;
+scroll-behavior: smooth;
+padding: 0 2.5rem; }
+
+.book::-webkit-scrollbar {
+width: 0; }
+
+    .book section {
+    padding: 3rem; }
+    
+    .book section * {
+    font-family: var( --book-fonts );
+    font-size: var(--book-font-size); }
+    
+        .section-header,
+        .book h2,
+        .book h1 {
+        padding: 1rem;
+        text-align: center;
+        margin: 1rem 0;
+        border-bottom: .1rem solid var( --content-color );
+        font-size: 120%; }
+    
+    .book v,
+    .book p,
+    .book .paragraph {
+    padding: .3rem 0;
+    display: block;
+    line-height: 1.5rem;
+    text-indent: 1.5rem; }
+    
+    .book epigraph:before {
+    content: '\f10e';
+    display: block;
+    padding: 1rem 0;
+    font:normal normal normal 14px/1 FontAwesome;
+    font-size: 2rem; }
+    
+    .book .fa:before {
+    font:normal normal normal 14px/1 FontAwesome; }
+    
+    .book img {
+    display: block;
+    max-width: 40%;
+    margin: 0 auto; }
+
+    .img-full-screen-view {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center; }
+        
+        .img-full-screen-view img {
+        width: auto;
+        max-height: calc( 100vh - 2rem );
+        background: var( --content-bg );
+        z-index: 1; }
+    
+        .img-full-screen-view::before {
+        content: ' ';
+        position: fixed;
+        background: rgba(0, 0, 0, .7);
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%; }  
+/*
+ * book tipografy end
+ *===========================================*/

@@ -1,0 +1,1 @@
+const bookmards={add(e){e.id=(new Date).getTime();let o=this.get();o.push(e),localStorage.bookmards=JSON.stringify(o)},remove(e){i("Removing bookmards!")},the_file(e){let o=this.get();return o?o.filter(e=>e.file==the_file):[]},get:()=>localStorage.bookmards?JSON.parse(localStorage.bookmards):[]};onmessage=e=>{let{method:o,arg:t}=e.data;postMessage(o(t))};

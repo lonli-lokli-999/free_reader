@@ -1,0 +1,88 @@
+.tab-bar-wrap {
+height: 100%;
+display: flex;
+align-items: flex-start; }
+
+	.tab-bar__toggle-btn {
+	position: fixed;
+	background: var( --content-bg );
+	color: var( --content-color );
+	padding: 1rem;
+	z-index: 1;
+	animation: move-to-right 1s; }
+    
+	.tab-bar__toggle-btn:hover,
+	.tab-bar__toggle-btn--active {
+	background: var( --content-bg ); }
+    
+	.tab-bar__toggle-btn--active .toggle-btn__icon {
+	transform: rotate( 180deg ); }
+    
+		.toggle-btn__icon {
+		display: block;
+		transition: .5s; }
+
+	.tab-bar {
+	position: fixed;
+	left: auto;
+	background: var( --content-bg );
+	width: 20rem;
+	max-width: 100%;
+	height: calc( 100vh - 3rem ); 
+	transition: .5s;
+	display: flex;
+	flex-direction: column;
+	transform: translateY( calc( -100% - 3rem ) ); }	
+
+		.tab-bar__header {
+		background: var(--header-bg);
+		display: flex;  }
+		
+		.tab {
+		display: none;
+		overflow-x: hidden;
+		overflow-y: auto;
+		scrollbar-width: none; }
+		
+		.tab::-webkit-scrollbar {
+		width: 0;
+		flex: 1; }
+		
+		.tab-bar--active {
+		transform: translateY(0);
+		z-index: 1; }
+		
+		.tab--active {
+		display: block;
+		animation: move-to-right .5s; }
+
+		.links {
+		flex: 1; }
+					
+			.tab-bar__btn {
+			background: none;
+			display: block;
+			color: var( --content-color );
+			text-align: left;
+			padding: .3rem;
+			width: 100%;
+			transition: .5s; }
+
+			.tab-bar__btn:hover {
+			color: var( --header-color );
+			background: var( --header-bg );
+			padding: .3rem 1rem .3rem; }
+			
+			.bookmark-link {
+			display: flex; }
+			
+				.bookmark-del {
+				background: none;
+				color: var( --text-color );
+				padding: 0 .5rem; }
+				
+				.bookmark-del:hover {
+				color: var( --header-bg ); }
+			
+			.book-name {
+			padding: .5rem; }
