@@ -120,18 +120,16 @@ text-align: center; }
 position: fixed;
 top: 0;
 left: 0;
-overflow-x: hidden;
-overflow-y: auto;
-scrollbar-width: none;
+display: flex;
+flex-direction: column;
 margin: 4rem calc( 50% - 15rem );
-padding: 3rem;
 width: 30rem;
-transform: translateY(-100vh);
 max-height: calc( 100vh - 5rem );
 background: var( --content-bg );
 color: var( --content-color );
 box-shadow: 0 0 .5rem var( --content-color );
 opacity: 0;
+transform: translateY(-100vh);
 transition: .5s;
 z-index: 1; }
 
@@ -139,60 +137,70 @@ z-index: 1; }
 transform: translateY(0);
 opacity: 1; }
 
-    .window__label {
-    display: block;
-    padding: 2rem 0 0;
-    color: var( --content-color );
-    white-space: nowrap; }
-        
-		.window__label:after {
-		content: '';
-		display: block;
-		border-bottom: .1rem solid var( --content-color );
-		margin: .5rem 1rem 1rem;
-		width: calc( 100% - 1rem ); }
-        
-    .window__inp-el {
-    width: 100%;
-    padding: 1rem;
-    margin: .3rem;
-    border: .1rem solid var( --content-color );
-    background: var( --content-bg );
-    color: var( --content-color ); }
-    
-    .window__inp-el:hover {
-    border: .1rem solid var( --header-bg ); }
-
-	.window__btn {
+	.window__header {
 	background: var( --header-bg );
-	color: var( --header-color );
-	padding: 1rem;
-	margin: .3rem; }
+	display: flex; }
+	
+	.window__main {
+	padding: 1rem .5rem;
+	flex: 1;
+	overflow: auto;
+	scrollbar-width: none; }
 
-	.window__close-btn {
-	margin: 0 0 0 auto; }
+		.window__label {
+		display: block;
+		padding: 2rem 0 0;
+		color: var( --content-color );
+		white-space: nowrap; }
+			
+			.window__label:after {
+			content: '';
+			display: block;
+			border-bottom: .1rem solid var( --content-color );
+			margin: .5rem 0 0;
+			width: 100%; }
+			
+			.window__inp-el {
+			width: 100%;
+			padding: 1rem;
+			margin: .3rem 0 0;
+			border: .1rem solid var( --content-color );
+			background: var( --content-bg );
+			color: var( --content-color ); }
+			
+			.window__inp-el:hover {
+			border: .1rem solid var( --header-bg ); }
 
-	.window__color-writer {
-	padding: .5rem;
-	text-align: center; }
+			.window__btn {
+			background: var( --header-bg );
+			color: var( --header-color );
+			padding: 1rem;
+			margin: .3rem; }
 
-    .window__btn:hover,
-    .window__btn:focus {
-    background: var( --header-color );
-    color: var( --header-bg ); }
-    
-    .align-book-text {
-    display: flex;
-    justify-content: space-between; }
-    
-		.align-book-text__btn {
-		width: calc( 25% - .6rem );
-		margin: .3rem 0;
-		transition: .5s; }
-    
-		.window__btn--active {
-		background: var( --header-color );
-		color: var( --header-bg ); }
+			.window__close-btn {
+			margin: 0 0 0 auto; }
+
+			.window__color-writer {
+			padding: .5rem;
+			text-align: center; }
+
+			.window__btn:hover,
+			.window__btn:focus {
+			background: var( --header-color );
+			color: var( --header-bg ); }
+			
+			.align-book-text {
+			display: flex;
+			justify-content: space-between; }
+			
+				.align-book-text__btn {
+				width: calc( 25% - .6rem );
+				margin: .3rem 0;
+				transition: .5s; }
+			
+				.window__btn--active {
+				background: var( --header-color );
+				color: var( --header-bg ); }
     
 .set-page-btns {
 position: fixed;
@@ -219,15 +227,7 @@ flex-direction: column; }
 .flibusta-aplet__search-box {
 width: 90%;
 margin: 4rem 5%;
-height: calc( 100vh - 5rem );
-padding: 0;
-display: flex;
-flex-direction: column; }
-
-	.search-box__header {
-	background: var( --header-bg );
-	display: flex;
-	}
+height: calc( 100vh - 5rem ); }
 
 		.search {
 		display: flex;
@@ -256,13 +256,6 @@ flex-direction: column; }
 			background: var( --header-color );
 			color: var( --header-bg );
 			}
-
-	.flibusta-aplet__main {
-	padding: .5rem	;
-	flex: 1;
-	overflow-y: auto;
-	scrollbar-width: none;
-	}
 
 		.books-list {
 		display: flex;
@@ -325,6 +318,23 @@ flex-direction: column; }
 								.book__downloads-links a {
 								display: block;
 								padding: .7rem 1rem; }
+								
+		.pugination {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 1rem;	}
+		
+			.pugination__btn {
+			background: none;
+			color: var( --content-color );
+			padding: 1rem; }
+			
+			.pugination__btn:hover,
+			.pugination__btn.active {
+			background: var( --header-bg );
+			color: var( --header-color );
+			padding: 1rem; }
 
 @media screen and ( max-width: 990px ) {
 	.books-list-item {

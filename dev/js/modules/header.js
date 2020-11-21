@@ -1,3 +1,96 @@
+//////////////////////////////////// pugination
+const pugination = 
+{
+	props:
+	{
+		curent: 
+		{
+			default: 0
+		},
+		
+		total:
+		{
+			default: 0
+		},
+		
+		step: 
+		{
+			default: 0
+		},
+		
+		clb: 
+		{
+			default: false
+		}
+	},
+	
+	computed:
+	{
+		pages()
+		{
+			return Math.ceil( this.total / this.step );
+		},
+		
+		page_list()
+		{
+			let
+				start 	= this.curent - 2,
+				end 	= this.curent + 2,
+				pages	= [];
+				
+				start 	= start < 0 ? 0 : start;
+				end 	= end > this.pages - 1 ? this.pages - 1 : end;
+				
+			for( let i = start; i <= end; i++ )
+				{ pages.push( i ) };
+				
+			return pages;
+		}
+	},
+	
+	methods: 
+	{
+		nextPage()
+		{
+				this.clb( this.curent + 1 );
+		},
+		
+		prevPage()
+		{
+				this.clb( this.curent - 1 );
+		},
+		
+		changePage( id )
+		{
+			this.clb( id )
+		}
+	},
+	
+	template: 
+	`
+		<div v-if="total > 0 && this.clb" class="pugination">
+			<button class="pugination__btn"
+				v-if="curent > 0"
+				@click="prevPage"
+			>Назад</button>
+			<div>
+				<button class="pugination__btn"
+					:class="{active: page_index == curent}"
+					v-for="page_index in page_list"
+					@click="changePage( page_index )"
+				>
+				{{ page_index + 1 }}
+				</button>
+			</div>
+			<button class="pugination__btn"
+				v-if="( curent + 1 ) < pages"
+				@click="nextPage"
+			>Вперед</button>
+		</div>
+	`
+};
+//////////////////////////////////// pugination end
+
 //////////////////////////////////// input book aplet 
 const inp_file = 
 {
@@ -41,26 +134,32 @@ const color_settings =
 	<div>
 		<button class="options-btn" @click="setStatus"><span class="fa fa-paint-brush"></span></button>
 		<div class="window">
-			<span class="window__label">Выберите цветовую схему</span>
-			<button v-for="( theme, id ) in themes" 
-					@click="setTheme" 
-					class="window__inp-el" 
-					:data="theme.colors" :data-theme-name="theme.name">
-				{{theme.name}}
-			</button>
-			<span class="window__label">Создать цветовую схему</span>
+			<header class="window__header">
+				<button class="window__close-btn window__btn" @click="setStatus"><i class="fa fa-close"></i></button>
+			</header>
 			
-			<input class="window__inp-el" v-model="new_user_theme_name" placeholder="Введите имя темы">
-			
-			<div class="window__color-writer">
-				<input type="color" class="color-inp" v-model="new_user_theme_header_bg" title="Фон шапки">
-				<input type="color" class="color-inp" v-model="new_user_theme_header_color" title="Цвет шапки">
-				<input type="color" class="color-inp" v-model="new_user_theme_main_bg" title="Фон контента" >
-				<input type="color" class="color-inp" v-model="new_user_theme_main_color" title="Цвет контента" >
-			</div>
-			
-			<button class="window__btn" @click="addTheme( true )">Добавить</button>
-			<button class="window__btn" @click="addTheme( false )">Применить</button>
+			<main class="window__main">
+				<span class="window__label">Выберите цветовую схему</span>
+				<button v-for="( theme, id ) in themes" 
+						@click="setTheme" 
+						class="window__inp-el" 
+						:data="theme.colors" :data-theme-name="theme.name">
+					{{theme.name}}
+				</button>
+				<span class="window__label">Создать цветовую схему</span>
+				
+				<input class="window__inp-el" v-model="new_user_theme_name" placeholder="Введите имя темы">
+				
+				<div class="window__color-writer">
+					<input type="color" class="color-inp" v-model="new_user_theme_header_bg" title="Фон шапки">
+					<input type="color" class="color-inp" v-model="new_user_theme_header_color" title="Цвет шапки">
+					<input type="color" class="color-inp" v-model="new_user_theme_main_bg" title="Фон контента" >
+					<input type="color" class="color-inp" v-model="new_user_theme_main_color" title="Цвет контента" >
+				</div>
+				
+				<button class="window__btn" @click="addTheme( true )">Добавить</button>
+				<button class="window__btn" @click="addTheme( false )">Применить</button>
+			</main>
 		</div>
 	</div>
 	`,
@@ -192,22 +291,28 @@ const settings =
 	<div>
 		<button @click="setStatus" class="options-btn"><span class="fa fa-cogs"></span></button>
 		<div class="window">
-			<span class="window__label">Размер шрифта</span>
-			<input class="window__inp-el" placeholder="Размер шрифта" v-model="book_font_size">
+			<header class="window__header">
+				<button class="window__close-btn window__btn" @click="setStatus"><i class="fa fa-close"></i></button>
+			</header>
 			
-			<span class="window__label">Шрифт книги</span>
-			<input class="window__inp-el" placeholder="Шрифт книги" v-model="book_font">
-			
-			<span class="window__label">Системный шрифт</span>
-			<input class="window__inp-el" placeholder="Системный шриф" v-model="system_font">
-			
-			<span class="window__label">Выравнивание</span>
-			 <div class="align-book-text">
-				<button class="align-book-text__btn window__inp-el window__btn--active" data="left" @click="setAlign"><span class="fa fa-align-left"></span></button>
-				<button class="align-book-text__btn window__inp-el" data="right" @click="setAlign"><span class="fa fa-align-right"></span></button>
-				<button class="align-book-text__btn window__inp-el" data="center" @click="setAlign"><span class="fa fa-align-center"></span></button>
-				<button class="align-book-text__btn window__inp-el" data="justify" @click="setAlign" ><span class="fa fa-align-justify"></span></button>
-			</div>
+			<main class="window__main">
+				<span class="window__label">Размер шрифта</span>
+				<input class="window__inp-el" placeholder="Размер шрифта" v-model="book_font_size">
+				
+				<span class="window__label">Шрифт книги</span>
+				<input class="window__inp-el" placeholder="Шрифт книги" v-model="book_font">
+				
+				<span class="window__label">Системный шрифт</span>
+				<input class="window__inp-el" placeholder="Системный шриф" v-model="system_font">
+				
+				<span class="window__label">Выравнивание</span>
+				 <div class="align-book-text">
+					<button class="align-book-text__btn window__inp-el window__btn--active" data="left" @click="setAlign"><span class="fa fa-align-left"></span></button>
+					<button class="align-book-text__btn window__inp-el" data="right" @click="setAlign"><span class="fa fa-align-right"></span></button>
+					<button class="align-book-text__btn window__inp-el" data="center" @click="setAlign"><span class="fa fa-align-center"></span></button>
+					<button class="align-book-text__btn window__inp-el" data="justify" @click="setAlign" ><span class="fa fa-align-justify"></span></button>
+				</div>
+			</main>
 		</div>
 	</div>
 	`,
@@ -388,7 +493,13 @@ const flibusta =
 {
 data: function()
 	{
-		return { books: null, search_str: null }
+		return { 
+			books: null,
+			search_str: null,
+			title: null,
+			total: 0,
+			curent: 0,
+			step: 0 }
 	},
 	
 	template:
@@ -399,7 +510,7 @@ data: function()
 		</button>
 
 		<div class="flibusta-aplet__search-box window">
-			<header class="search-box__header">
+			<header class="window__header">
 				<div class="search">
 					<input class="search__inp-el" placeholder="Введите название книги." v-model="search_str" @change="getBooks">
 					<button class="search__btn" @click="getBooks"><i class="fa fa-search"></i></button>
@@ -407,26 +518,37 @@ data: function()
 				<button class="window__close-btn window__btn" @click="toggleBookSearchBox"><i class="fa fa-close"></i></button>
 			</header>
 
-			<main class="flibusta-aplet__main">
+			<main class="window__main">
 				<div class="books-list">
-					<div v-for="book in books" class="books-list-item" :style="('background-image: url('+book.main_url+book.cover+');')">
+					<div
+						v-for="book in books" 
+						class="books-list-item" 
+						:style="('background-image: url('+book.cover+');')">
 						<main class="books-list-item__main">
 							<p>{{ book.book_name }}</p>
 							<p>{{ book.author }}</p>
 						</main>
 						<footer class="books-list-item__footer">
 							<button class="footer__btn" @click="read( book )"><i class="fa fa-book"></i></button>
+							<button class="footer__btn" @click="save( book )"><i class="fa fa-save"></i></button>
 							<div class="book__downloads">
 								<button class="footer__btn" @click="toggleDownloadsLinks"><i class="fa fa-download"></i></button>
 								<div class="book__downloads-links">
-									<a class="footer__btn" :href="(book.main_url+book.link + '/fb2')">Fb2</a>
-									<a class="footer__btn" :href="(book.main_url+book.link + '/epub')">Epub</a>
-									<a class="footer__btn" :href="(book.main_url+book.link + '/mobi')">Mobi</a>
+									<a class="footer__btn" :href="(book.link + '/fb2')">Fb2</a>
+									<a class="footer__btn" :href="(book.link + '/epub')">Epub</a>
+									<a class="footer__btn" :href="(book.link + '/mobi')">Mobi</a>
 								</div>
 							</div>					
 						</footer>
 					</div>
 				</div>
+				
+				<div is="pugination"
+					:total="total"
+					:step="step"
+					:curent="curent"
+					:clb="changePage"
+				></div>
 			</main>
 		</div>
 	</div>
@@ -450,15 +572,32 @@ data: function()
 			.querySelector( '.book__downloads-links' )
 			.classList.toggle( 'book__downloads-links--active' )
 		},
+		
+		changePage( next_page )
+		{
+			fetch( `/search/${ this.search_str }/${next_page}` )
+				.then( res => res.json() )
+				.then( res => { 
+					this.books = res.books;
+					this.total = res.total;
+					this.curent = next_page;
+					this.step = res.step;
+				} )
+		},
 
 		getBooks()
 		{
 			if( this.search_str == '' )
 				return;
 			
-			fetch( `/search/${ this.search_str }` )
+			fetch( `/search/${ this.search_str }/0` )
 				.then( res => res.json() )
-				.then( res => { this.books = res } )
+				.then( res => {
+					this.books = res.books;
+					this.total = res.total;
+					this.curent = 0;
+					this.step = res.step;
+				} )
 		},
 
 		read( book )
@@ -466,22 +605,150 @@ data: function()
 			let
 				{book_name, cover, main_url, _id } = book;
 
-			fetch( `/read${ _id }` )
+			fetch( `/read/${ _id }` )
 				.then( res => res.text() )
 				.then( res => {
 					let book = 
 						{
 							content: res,
-							cover: `${main_url}/${cover}`,
+							cover: cover,
 							title: book_name
 						};
 						
 					this.$emit( 'libopen', book );
 				} )
+		},
+		
+		save( book )
+		{
+			let
+				books = localStorage.books ?
+						JSON.parse( localStorage.books ) :
+						[],
+				saved = books.find( item => item._id == book._id ),
+				{ _id, book_name, cover, author } = book;
+
+			books.push( { _id, book_name, cover, author } );
+
+			if( !saved )
+				localStorage.books = JSON.stringify( books );
 		}
+	},
+	
+	components: 
+	{
+		'pugination': pugination
 	}
 };
 //////////////////////////////////// flibusta aplet end
+
+//////////////////////////////////// my books aplet
+const my_books =
+{
+	template:
+	`
+	<div class="my-books-aplet">
+		<button @click="toggleMyBook" class="options-btn">
+			<span class="fa fa-save"></span>
+		</button>
+
+		<div class="flibusta-aplet__search-box window">
+			<header class="window__header">
+				<button class="window__close-btn window__btn" @click="toggleMyBook"><i class="fa fa-close"></i></button>
+			</header>
+
+			<main class="window__main">
+				<div class="books-list">
+					<div
+						v-for="book in books" 
+						class="books-list-item" 
+						:style="('background-image: url('+book.cover+');')">
+						<main class="books-list-item__main">
+							<p>{{ book.book_name }}</p>
+							<p>{{ book.author }}</p>
+						</main>
+						<footer class="books-list-item__footer">
+							<button class="footer__btn" @click="read( book )"><i class="fa fa-book"></i></button>
+							<button class="footer__btn" @click="remove( book )"><i class="fa fa-remove"></i></button>
+							<div class="book__downloads">
+								<button class="footer__btn" @click="toggleDownloadsLinks"><i class="fa fa-download"></i></button>
+								<div class="book__downloads-links">
+									<a class="footer__btn" :href="(book.link + '/fb2')">Fb2</a>
+									<a class="footer__btn" :href="(book.link + '/epub')">Epub</a>
+									<a class="footer__btn" :href="(book.link + '/mobi')">Mobi</a>
+								</div>
+							</div>					
+						</footer>
+					</div>
+				</div>
+			</main>
+		</div>
+	</div>
+	`,
+	
+	methods:
+	{
+		toggleMyBook()
+		{
+			// need fix this
+			this.books = localStorage.books ?	JSON.parse( localStorage.books ) : [];
+			
+			this.$el
+				.querySelector( '.window' )
+				.classList.toggle( 'window--active' );
+		},
+
+		toggleDownloadsLinks( ev )
+		{
+			
+			ev.target
+				.closest( '.book__downloads' )
+				.querySelector( '.book__downloads-links' )
+				.classList.toggle( 'book__downloads-links--active' )
+		},
+
+		read( book )
+		{
+			let
+				{book_name, cover, main_url, _id } = book;
+
+			fetch( `/read/${ _id }` )
+				.then( res => res.text() )
+				.then( res => {
+					let book = 
+						{
+							content: res,
+							cover: cover,
+							title: book_name
+						};
+						
+					this.$emit( 'libopen', book );
+				} )
+		},
+		
+		remove( book )
+		{
+			let
+				books = localStorage.books ?
+						JSON.parse( localStorage.books ) :
+						[];
+				
+			books = books.filter( item => item._id != book._id );
+			
+			localStorage.books = JSON.stringify( books );
+		}
+	},
+	
+	computed: 
+	{
+		books()
+		{
+			return localStorage.books ?	JSON.parse( localStorage.books ) : [];
+						
+		}
+	}
+};
+//////////////////////////////////// my books end
 
 //////////////////////////////////// info
 const info = 
@@ -491,18 +758,23 @@ const info =
 	<div>
 		<button @click="setStatus" class="options-btn"><span class="fa fa-info"></span></button>
 		<div class="window">
-			<h2 class="window__label">О приложении - Free reader</h2>
-			<p>V - 3.0.0</p>
-			<p>Free reader - это безплатное веб приложение с открытым исходным кодом.</p>
-			<p>Программа предаставляет возможность:</p>
-			<p>чтения форматов fb2, epub, txt;</p>
-			<p>поиск книг по базе данных flibusta;</p>
-			<p>гибкие настройки интерфейса;</p>
-			<h2 class="window__label">Ссылки</h2>
-			<ul>
-				<li><a href="https://github.com/lonli-lokli-999/open-fb2-web">Github</a></li>
-				<li><a href="https://money.yandex.ru/to/410017268643291">Поддержать разработку</a></li>
-			</ul>
+			<header class="window__header">
+				<button class="window__close-btn window__btn" @click="setStatus"><i class="fa fa-close"></i></button>
+			</header>
+			<main class="window__main">
+				<h2 class="window__label">О приложении - Free reader</h2>
+				<p>V - 3.0.0</p>
+				<p>Free reader - это безплатное веб приложение с открытым исходным кодом.</p>
+				<p>Программа предаставляет возможность:</p>
+				<p>чтения форматов fb2, epub, txt;</p>
+				<p>поиск книг по базе данных flibusta;</p>
+				<p>гибкие настройки интерфейса;</p>
+				<h2 class="window__label">Ссылки</h2>
+				<ul>
+					<li><a href="https://github.com/lonli-lokli-999/open-fb2-web">Github</a></li>
+					<li><a href="https://money.yandex.ru/to/410017268643291">Поддержать разработку</a></li>
+				</ul>
+			</main>
 		</div>
 	</div>
 	`,
@@ -536,6 +808,7 @@ export const header =
 				<div class="options">
 					<div is="inp_file" @select="selectFile"></div>
 					<div is="flibusta" @libopen="bookOpen"></div>
+					<div is="my_books" @libopen="bookOpen"></div>
 					<div v-if="book_open" is="bookmarks" :book_name="book_name"></div>
 					<div is="settings"></div>
 					<div is="color_settings"></div>
@@ -553,6 +826,7 @@ export const header =
 		'settings': settings,
 		'reading_status_aplet': reading_status_aplet,
 		'flibusta': flibusta,
+		'my_books': my_books,
 		'bookmarks': bookmarks,
 		'info': info
 	},
@@ -570,6 +844,8 @@ export const header =
 		bookOpen( book )
 		{
 			this.$emit( 'flibopen', book );
+			
+			this.book_open = true;
 		}
 	}
 };

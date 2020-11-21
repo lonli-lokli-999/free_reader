@@ -1,20 +1,21 @@
 const request = require('request');
+const xml2js = require('xml2js');
 
 const flibapi =
 {
 	_main_url: "http://flibusta.is",
 	_search_url: "http://flibusta.site/opds-opensearch.xml",
 	
-	search( req )
+	search( req, page )
 	{
 		let
 			req_encode = encodeURIComponent( req ),
-			url = `http://flibusta.site/opds/opensearch?searchTerm=${req_encode}&amp;searchType=books&amp`;
+			url = `http://flibusta.site/opds/opensearch?searchTerm=${req_encode}&pageNumber=${page}`;
 
 		return new Promise(  function( resolve, reject ) {
 			request( url, function (error, response, body) {
 				if( body )
-					resolve( flibapi.bodyParce( body ) );
+					resolve( flibapi.bodyParce( body, resolve ) );
 			});
 		} );
 	},
@@ -32,32 +33,36 @@ const flibapi =
 		} );
 	},
 
-	bodyParce( body )
+	bodyParce( body, resolve )
 	{
-		
-		body = body.replace( /\n/g, '' );
-		
-		let
-			result = body.match( /<entry>(.*?)<\/entry>/g );
-
-		if( !result )
-			return [];
-		
-			result = result.map( book_entry => {
-			   let
-					main_url	= flibapi._main_url,
-					book_name	= book_entry.match( /<title>(.*?)<\/title>/ )[1],
-					author		= book_entry.match( /<name>(.*?)<\/name>/ )[1],
-					anotation	= book_entry.match( /<content.*>(.*?)<\/content>/ )[0],
-					link		= book_entry.match( /<link.href="([^>]*)".rel="alternate"/ )[1],
-					_id			= link.replace( 'b/', '' ),
-					cover     	= 	book_entry.match( /<link.href="([^>]*)".rel="x-stanza-cover-image"/ ) ?
-									book_entry.match( /<link.href="([^>]*)".rel="x-stanza-cover-image"/ )[1] :
-									'';
-			   return { main_url, book_name, cover, link, _id, author }
+		xml2js.parseString( body, (err, result) => 
+		{
+			let
+				books 		= result.feed.entry || [],
+				total 		= result.feed['os:totalResults'][0],
+				step 		= result.feed['os:itemsPerPage'][0],
+				curent 		= result.feed['os:startIndex'][0],
+				main_url	= flibapi._main_url;
+				
+			books = books.map( book => {
+				let
+					book_name	= book.title[0],			
+					_id			= book
+								.link.find( item => item['$'].rel == "alternate"  )
+								["$"].href,
+					cover 		= book.link
+								.find( item => item['$'].type == 'image/jpeg'  ),
+					author 		= book.author ? book.author[0].name[0] : '';
+				
+				cover = cover ? `${main_url}${cover['$'].href}` : '';
+				_id = _id.replace( '/b/', '' );
+					
+				return { book_name, _id, author, cover }
 			} );
-
-		return result
+				
+				
+			resolve( { books, total, curent, step } );
+		})
 	},
 
 	bookParce( body )

@@ -21,11 +21,11 @@ app.get('/', (req, res) => {
 	res.render('index');
 });
 
-app.get('/search/:bookname/', (req, res) => {
+app.get('/search/:bookname/:page', (req, res) => {
 	let
-		{bookname} = req.params;
+		{ bookname, page } = req.params;
 
-	flibapi.search( bookname )
+	flibapi.search( bookname, page )
 		.then( result => {
 			res.send( JSON.stringify( result ) );
 		} )
