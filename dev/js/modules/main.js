@@ -121,7 +121,7 @@ const tab_bar =
 				.querySelector( `.${ tab_name }` )
 				.classList.add( 'tab--active' );
 				
-			if( ev.target.id == 'bookmards' )
+			if( tab_name == 'bookmards' )
 				this.bookmarksUpdate();
 		},
 		

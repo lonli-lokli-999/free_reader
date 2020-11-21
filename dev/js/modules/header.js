@@ -645,6 +645,11 @@ data: function()
 //////////////////////////////////// my books aplet
 const my_books =
 {
+	data: function()
+	{
+		return { books: null }
+	},
+	
 	template:
 	`
 	<div class="my-books-aplet">
@@ -689,13 +694,17 @@ const my_books =
 	methods:
 	{
 		toggleMyBook()
-		{
-			// need fix this
-			this.books = localStorage.books ?	JSON.parse( localStorage.books ) : [];
+		{			
+			this.booksUpdate();
 			
 			this.$el
 				.querySelector( '.window' )
-				.classList.toggle( 'window--active' );
+				.classList.toggle( 'window--active' )
+		},
+		
+		booksUpdate()
+		{
+			this.books = localStorage.books ? JSON.parse( localStorage.books ) : [];
 		},
 
 		toggleDownloadsLinks( ev )
@@ -736,15 +745,6 @@ const my_books =
 			books = books.filter( item => item._id != book._id );
 			
 			localStorage.books = JSON.stringify( books );
-		}
-	},
-	
-	computed: 
-	{
-		books()
-		{
-			return localStorage.books ?	JSON.parse( localStorage.books ) : [];
-						
 		}
 	}
 };
