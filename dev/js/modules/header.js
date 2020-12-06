@@ -626,9 +626,9 @@ data: function()
 						JSON.parse( localStorage.books ) :
 						[],
 				saved = books.find( item => item._id == book._id ),
-				{ _id, book_name, cover, author } = book;
+				{ _id, book_name, cover, author, link } = book;
 
-			books.push( { _id, book_name, cover, author } );
+			books.push( { _id, book_name, cover, author, link } );
 
 			if( !saved )
 				localStorage.books = JSON.stringify( books );
