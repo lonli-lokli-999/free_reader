@@ -534,9 +534,9 @@ data: function()
 							<div class="book__downloads">
 								<button class="footer__btn" @click="toggleDownloadsLinks"><i class="fa fa-download"></i></button>
 								<div class="book__downloads-links">
-									<a class="footer__btn" :href="(book.link + '/fb2')">Fb2</a>
-									<a class="footer__btn" :href="(book.link + '/epub')">Epub</a>
-									<a class="footer__btn" :href="(book.link + '/mobi')">Mobi</a>
+									<a class="footer__btn" :href="(book.link + '/fb2')" target="_blank">Fb2</a>
+									<a class="footer__btn" :href="(book.link + '/epub')" target="_blank">Epub</a>
+									<a class="footer__btn" :href="(book.link + '/mobi')" target="_blank">Mobi</a>
 								</div>
 							</div>					
 						</footer>

@@ -49,7 +49,7 @@ const book_area = {
 				book_el = this.$el;	
 			book_el.scrollTop += book_el.clientHeight;
 		}
-	}	
+	}
 };
 //////////////////////////////////// book_area end
 
@@ -225,7 +225,34 @@ export const main =
 	{
 		updateReadingStatus( status )
 		{
+			let
+				the_book_id = this.books_progress.findIndex( book => book.name == this.book.title );
+			
+			if( the_book_id != -1 )
+				this.books_progress[ the_book_id ].progress = status
+			else
+				this.books_progress.push( { name: this.book.title, progress: status } )
+			;
+			
+			localStorage.books_progress = JSON.stringify( this.books_progress );
+				
 			this.$emit( 'changedReadingStatus', status );
+		}
+	},
+	
+	computed:
+	{
+		books_progress: function()
+		{
+			return localStorage.books_progress ? JSON.parse( localStorage.books_progress ) : [];
+		},
+		
+		the_progress: function()
+		{
+			let
+				the_book = this.books_progress.find( book => book.name == this.book.title );
+				
+			return 	the_book ? the_book.progress : false;
 		}
 	},
 	
@@ -234,16 +261,21 @@ export const main =
 		book()
 		{			
 			let
-				chapters = [];
+				chapters	= [];
 				
 			setTimeout( () => {
-				this.$el.querySelectorAll( 'h2' )
+				let
+					book_el = document.querySelector( '.book' );
+				
+				this.$el.querySelectorAll( 'h2' )			
 					.forEach( ( title, id ) => {
 						title.id = `chapter_${id}`;
 						chapters.push( { label: title.innerText, href: `#chapter_${id}` } );
 					} );
-					
-			this.chapters = chapters;
+						
+					book_el.scrollTop = this.the_progress ?
+						book_el.scrollHeight / 100 * this.the_progress.procent :
+						0;
 			}, 2000 )
 		}
 	}

@@ -3,14 +3,14 @@ const xml2js = require('xml2js');
 
 const flibapi =
 {
-	_main_url: "http://flibusta.is",
-	_search_url: "http://flibusta.site/opds-opensearch.xml",
+	_main_url: "http://flibusta.net",
+	_search_url: "http://flibusta.is/opds/opensearch?",
 	
 	search( req, page )
 	{
 		let
 			req_encode = encodeURIComponent( req ),
-			url = `http://flibusta.site/opds/opensearch?searchTerm=${req_encode}&pageNumber=${page}`;
+			url = `${this._search_url}searchTerm=${req_encode}&pageNumber=${page}`;
 
 		return new Promise(  function( resolve, reject ) {
 			request( url, function (error, response, body) {
@@ -52,12 +52,13 @@ const flibapi =
 								["$"].href,
 					cover 		= book.link
 								.find( item => item['$'].type == 'image/jpeg'  ),
-					author 		= book.author ? book.author[0].name[0] : '';
+					author 		= book.author ? book.author[0].name[0] : '',
+					link		= `${this._main_url}${_id}`;
 				
 				cover = cover ? `${main_url}${cover['$'].href}` : '';
 				_id = _id.replace( '/b/', '' );
 					
-				return { book_name, _id, author, cover }
+				return { book_name, _id, author, cover, link }
 			} );
 				
 				
