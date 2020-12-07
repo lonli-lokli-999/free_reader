@@ -273,9 +273,11 @@ export const main =
 						chapters.push( { label: title.innerText, href: `#chapter_${id}` } );
 					} );
 						
-					book_el.scrollTop = this.the_progress ?
-						book_el.scrollHeight / 100 * this.the_progress.procent :
-						0;
+				book_el.scrollTop = this.the_progress ?
+					book_el.scrollHeight / 100 * this.the_progress.procent :
+					0;
+					
+				this.chapters = chapters;
 			}, 2000 )
 		}
 	}
