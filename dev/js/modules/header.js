@@ -615,6 +615,8 @@ data: function()
 							title: book_name
 						};
 						
+					console.log( book )
+						
 					this.$emit( 'libopen', book );
 				} )
 		},

@@ -3,7 +3,7 @@ const xml2js = require('xml2js');
 
 const flibapi =
 {
-	_main_url: "http://flibusta.net",
+	_main_url: "http://flibusta.is",
 	_search_url: "http://flibusta.is/opds/opensearch?",
 	
 	search( req, page )
@@ -24,6 +24,8 @@ const flibapi =
 	{
 		let
 			url = `${this._main_url}/b/${id}/read`;
+			
+		console.log( url );
 
 		return new Promise(  function( resolve, reject ) {
 			request( url, function (error, response, body) {
