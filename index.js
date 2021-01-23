@@ -31,6 +31,16 @@ app.get('/search/:bookname/:page', (req, res) => {
 		} )
 });
 
+app.get('/seria/:seria_id', (req, res) => {
+	let
+		{ seria_id } = req.params;
+
+	flibapi.getSeria( seria_id )
+		.then( result => {
+			res.send( JSON.stringify( result ) );
+		} )
+});
+
 app.get('/read/:id/', (req, res) => {
 	let
 		{id} = req.params;

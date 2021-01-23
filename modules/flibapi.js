@@ -15,7 +15,20 @@ const flibapi =
 		return new Promise(  function( resolve, reject ) {
 			request( url, function (error, response, body) {
 				if( body )
-					resolve( flibapi.bodyParce( body, resolve ) );
+					flibapi.bodyParce( body, resolve );
+			});
+		} );
+	},
+	
+	getSeria( seria_id ) 
+	{
+		return new Promise(  function( resolve, reject ) {
+			console.log( `${flibapi._main_url}/opds/sequencebooks/${seria_id}` );
+			
+			request( `${flibapi._main_url}/opds/sequencebooks/${seria_id}`, function (error, response, body) 
+			{
+				if( body )
+					flibapi.bodyParce( body, resolve );
 			});
 		} );
 	},
@@ -39,11 +52,12 @@ const flibapi =
 	{
 		xml2js.parseString( body, (err, result) => 
 		{
+				
 			let
 				books 		= result.feed.entry || [],
-				total 		= result.feed['os:totalResults'][0],
-				step 		= result.feed['os:itemsPerPage'][0],
-				curent 		= result.feed['os:startIndex'][0],
+				total 		= result.feed['os:totalResults'] ? result.feed['os:totalResults'][0] : 0,
+				step 		= result.feed['os:itemsPerPage'] ? result.feed['os:itemsPerPage'][0] : 0,
+				curent 		= result.feed['os:startIndex'] ? result.feed['os:startIndex'][0] : 0,
 				main_url	= flibapi._main_url;
 				
 			books = books.map( book => {
@@ -55,12 +69,15 @@ const flibapi =
 					cover 		= book.link
 								.find( item => item['$'].type == 'image/jpeg'  ),
 					author 		= book.author ? book.author[0].name[0] : '',
-					link		= `${this._main_url}${_id}`;
+					link		= `${this._main_url}${_id}`,
+					seria		= book.link
+								.find( item => item['$'].href.indexOf( "/opds/sequencebooks" ) != -1  );
 				
 				cover = cover ? `${main_url}${cover['$'].href}` : '';
+				seria = seria ? seria['$'].href.slice( seria['$'].href.lastIndexOf( '/' ) + 1 ) : '';
 				_id = _id.replace( '/b/', '' );
 					
-				return { book_name, _id, author, cover, link }
+				return { book_name, _id, author, cover, link, seria }
 			} );
 				
 				

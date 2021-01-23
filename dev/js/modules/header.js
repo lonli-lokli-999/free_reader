@@ -539,6 +539,7 @@ data: function()
 									<a class="footer__btn" :href="(book.link + '/mobi')" target="_blank">Mobi</a>
 								</div>
 							</div>					
+							<button v-if="book.seria != ''" class="footer__btn" @click="getTheSeria( book.seria )"><i class="fa fa-angle-double-right"></i></button>
 						</footer>
 					</div>
 				</div>
@@ -573,8 +574,25 @@ data: function()
 			.classList.toggle( 'book__downloads-links--active' )
 		},
 		
-		changePage( next_page )
+		getTheSeria( seria_id )
 		{
+			this.$el.querySelector( '.flibusta-aplet .window__main' ).scrollTop = 0;
+			
+			fetch( `/seria/${ seria_id }` )
+				.then( res => res.json() )
+				.then( res => {
+					console.log( res );
+					this.books = res.books;
+					this.total = res.total;
+					this.curent = 0;
+					this.step = res.step;
+				} )
+		},
+		
+		changePage( next_page )
+		{			
+			this.$el.querySelector( '.flibusta-aplet .window__main' ).scrollTop = 0;
+			
 			fetch( `/search/${ this.search_str }/${next_page}` )
 				.then( res => res.json() )
 				.then( res => { 
@@ -684,7 +702,7 @@ const my_books =
 									<a class="footer__btn" :href="(book.link + '/epub')">Epub</a>
 									<a class="footer__btn" :href="(book.link + '/mobi')">Mobi</a>
 								</div>
-							</div>					
+							</div>
 						</footer>
 					</div>
 				</div>
