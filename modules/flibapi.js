@@ -22,9 +22,7 @@ const flibapi =
 	
 	getSeria( seria_id ) 
 	{
-		return new Promise(  function( resolve, reject ) {
-			console.log( `${flibapi._main_url}/opds/sequencebooks/${seria_id}` );
-			
+		return new Promise(  function( resolve, reject ) {			
 			request( `${flibapi._main_url}/opds/sequencebooks/${seria_id}`, function (error, response, body) 
 			{
 				if( body )
@@ -37,8 +35,6 @@ const flibapi =
 	{
 		let
 			url = `${this._main_url}/b/${id}/read`;
-			
-		console.log( url );
 
 		return new Promise(  function( resolve, reject ) {
 			request( url, function (error, response, body) {

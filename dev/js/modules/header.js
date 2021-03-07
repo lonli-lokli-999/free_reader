@@ -221,7 +221,6 @@ const color_settings =
 		setDefTheme( name, colors )
 		{
 			localStorage.def_theme_name = name;
-			localStorage.def_theme = colors;
 		},
 		
 		activeTheme( data )
@@ -252,19 +251,26 @@ const color_settings =
 			.then( res => res.json() )
 			.then( res => { 
 				this.themes = res.concat( user_themes );
-				this.activeTheme( localStorage.def_theme ? localStorage.def_theme : res[0].colors );
+				let
+					def_theme = localStorage.def_theme_name ? this.themes.find( item => item.name == localStorage.def_theme_name ) : null,
+					the_them_colors = def_theme ? def_theme.colors : null;
+					
+				if( !the_them_colors )
+					localStorage.def_theme_name = this.themes[0].name;
+					
+				this.activeTheme( localStorage.def_theme ? localStorage.def_theme : the_them_colors );
 				
 				setTimeout( () => {
-						this.$el
-							.querySelectorAll( '[data-theme-name]' )
-							.forEach( ( theme_btn, id ) => {								
-								if( localStorage.def_theme )
-									if( theme_btn.getAttribute( 'data-theme-name' ) == localStorage.def_theme_name )
-										theme_btn.classList.add( 'window__btn--active' );
-										
-								if( id == 0 && !localStorage.def_theme )
+					this.$el
+						.querySelectorAll( '[data-theme-name]' )
+						.forEach( ( theme_btn, id ) => {								
+							if( localStorage.def_theme )
+								if( theme_btn.getAttribute( 'data-theme-name' ) == localStorage.def_theme_name )
 									theme_btn.classList.add( 'window__btn--active' );
-							} );
+									
+							if( id == 0 && !localStorage.def_theme )
+								theme_btn.classList.add( 'window__btn--active' );
+						} );
 				}, 1000 );
 			} );
 	}
@@ -424,10 +430,6 @@ props: ['reading_status'],
 			document
 				.querySelector( '.reading-status__inp' )
 				.classList.toggle( 'reading-status__inp--active' );
-				
-			document
-				.querySelector( '.reading-status-grafic' )
-				.classList.toggle( 'reading-status-grafic--active' );
 		}
 	}
 };
@@ -581,7 +583,6 @@ data: function()
 			fetch( `/seria/${ seria_id }` )
 				.then( res => res.json() )
 				.then( res => {
-					console.log( res );
 					this.books = res.books;
 					this.total = res.total;
 					this.curent = 0;
@@ -632,8 +633,6 @@ data: function()
 							cover: cover,
 							title: book_name
 						};
-						
-					console.log( book )
 						
 					this.$emit( 'libopen', book );
 				} )
@@ -825,7 +824,10 @@ export const header =
 	`
 		<header class="main-header-wrap" >
 			<div class="main-header conatiner">
-				<div class="options">
+				<div 
+					class="options"
+					:class="( book_open ? 'options--active': '' )"
+					>
 					<div is="inp_file" @select="selectFile"></div>
 					<div is="flibusta" @libopen="bookOpen"></div>
 					<div is="my_books" @libopen="bookOpen"></div>

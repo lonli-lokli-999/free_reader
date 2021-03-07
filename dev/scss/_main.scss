@@ -79,38 +79,7 @@ height: calc( 100vh - 3rem ); }
 /*
  * logo end
  *===========================================*/
-			
-/*
- * reading status bar
- *===========================================*/
-.reading-status-grafic {
-position: fixed;
-bottom: 0;
-left: 0;
-width: calc( 100% - 6rem );
-height: .4rem;
-margin: 0 3rem;
-background: var( --content-bg );
-box-shadow: 0 0 .5rem var( --content-color );
-opacity: 0;
-transition: .5s;
-}
-
-.reading-status-grafic:hover,
-.reading-status-grafic--active {
-opacity: .7;
-height: 1rem;
-}
-
-    .reading-status-grafic__progress-line {
-    display: block;
-    padding: .5rem 0;
-    background: var( --header-bg );
-    width: 0;
-    }
-/*
- * reading status bar end
- *===========================================*/
+		
 
 /*
  * book tipografy
@@ -121,13 +90,13 @@ max-height: calc( 100vh - 3rem );
 overflow: auto;
 scrollbar-width: none;
 scroll-behavior: smooth;
-padding: 0 2.5rem; }
+padding: 0 1rem; }
 
 .book::-webkit-scrollbar {
 width: 0; }
 
     .book section {
-    padding: 3rem; }
+    padding: 3rem 0; }
     
     .book section * {
     font-family: var( --book-fonts );
@@ -187,7 +156,32 @@ width: 0; }
         top: 0;
         left: 0;
         height: 100%;
-        width: 100%; }  
+        width: 100%; }
+        
+.set-page-btns {
+position: fixed;
+top: 3rem;
+right: 0;
+height: calc( 100% - 3rem );
+display: flex;
+flex-direction: column;
+transform: translate(90%);
+transition: .5s; }
+
+.set-page-btns:hover 
+{
+transform: translate(0);
+}
+
+    .set-page-btn {
+    color: var( --content-color );
+    background:  var( --content-bg );
+    height: 50%;
+    padding: 1rem; }
+    
+    .set-page-btn:hover {
+    color: var( --header-color );
+    background:  var( --header-bg ); }  
 /*
  * book tipografy end
  *===========================================*/

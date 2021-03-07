@@ -5,10 +5,12 @@ align-items: flex-start; }
 
 	.tab-bar__toggle-btn {
 	position: fixed;
+	top: 0;
+	width: 3rem;
 	background: var( --content-bg );
 	color: var( --content-color );
 	padding: 1rem;
-	z-index: 1;
+	z-index: 3;
 	animation: move-to-right 1s; }
     
 	.tab-bar__toggle-btn:hover,

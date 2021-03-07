@@ -1,7 +1,9 @@
 [
-	{ "name": "Light", "colors": "#8C2A3C #D9C1B4 #D9C1B4 #26181A" },
-	{ "name": "Dark", "colors": "#8C2A3C #D9C1B4 #181926 #525473" },
-	{ "name": "Gray", "colors": "#262626 #BFBFBF #595959 #0D0D0D" },
-	{ "name": "Grean line", "colors": "#1F7363 #C7D1D9 #A4B3BF #3F3F40" },
-	{ "name": "Tm", "colors": "#260919 #735c68 #8C6973 #39131E" }
+	{"name": "Light", "colors": "#8C2A3C #D9C1B4 #D9C1B4 #26181A"},
+	{"name":"Arc","colors":"#4a5064 #e8e8e8 #2e3543 #c3c3c3"},
+	{"name":"Numix","colors":"#fdf3e8 #f57d49 #40392f #978562"},
+	{"name":"Albedo","colors":"#a22a2d #ffffff #ffffff #808080"},
+	{"name":"New Dark","colors":"#282d39 #e8e8e8 #2c3441 #c3c3c3"},
+	{"name":"Vilet","colors":"#9b4d6f #ffffff #f2f2f2 #808080"},
+	{"name":"Vilet Dark","colors":"#9b4d6f #e8e8e8 #2c3441 #bbbbbb"}
 ]
