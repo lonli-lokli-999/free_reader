@@ -12,12 +12,15 @@ z-index: 3; }
     color: var( --header-color ); }
 
 		.options {
-       display: flex;
-       transition: .5s; }
+		display: flex;
+		transition: .5s; }
+
+		.options--active {
+		margin: 0 3rem 0; }
        
-       .options--active {
-       margin: 0 3rem 0;
-       }
+			.options--active span {
+			transition: 1s;
+			transform: rotate(360deg); }
 
 			.options-btn {
 			padding: 1rem;
@@ -110,7 +113,7 @@ color: var( --header-color ); }
     width: 20rem;
     padding: .9rem 1rem;
     z-index: 1;
-    box-shadow: 0 0 .5rem var( --content-color ); }
+    box-shadow: 0 0 .5rem var( op--content-color ); }
     
     .reading-status-grafic {
 	position: fixed;
