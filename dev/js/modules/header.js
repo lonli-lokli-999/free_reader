@@ -256,7 +256,8 @@ const color_settings =
 					the_them_colors = def_theme ? def_theme.colors : null;
 					
 				if( !the_them_colors )
-					localStorage.def_theme_name = this.themes[0].name;
+					localStorage.def_theme_name = this.themes[0].name,
+					the_them_colors = this.themes[0].colors;
 					
 				this.activeTheme( localStorage.def_theme ? localStorage.def_theme : the_them_colors );
 				
@@ -541,6 +542,7 @@ data: function()
 									<a class="footer__btn" :href="(book.link + '/mobi')" target="_blank">Mobi</a>
 								</div>
 							</div>					
+							<button class="footer__btn" @click="share( book )"><i class="fa fa-share-alt"></i></button>
 							<button v-if="book.seria != ''" class="footer__btn" @click="getTheSeria( book.seria )"><i class="fa fa-angle-double-right"></i></button>
 						</footer>
 					</div>
@@ -624,6 +626,8 @@ data: function()
 			let
 				{book_name, cover, main_url, _id } = book;
 
+			console.log(cover);
+
 			fetch( `/read/${ _id }` )
 				.then( res => res.text() )
 				.then( res => {
@@ -651,7 +655,40 @@ data: function()
 
 			if( !saved )
 				localStorage.books = JSON.stringify( books );
+		},
+		
+		share( book )
+		{
+			let
+				{book_name, cover, _id } = book,
+				cb = document.createElement("input"),
+				book_url = `${window.location.origin}?id=${_id};book_name=${book_name};cover=${cover}`;
+			
+			
+			document.body.appendChild( cb );
+			cb.value = book_url;
+			cb.select();
+			document.execCommand('copy');
+			cb.remove();
 		}
+	},
+	
+	created: function()
+	{
+		let
+			search_book = window.location.search;
+			
+		
+		if( search_book.indexOf( 'id=' ) == -1 )
+			return false;
+			
+		let
+			_id = search_book.match( /id=([0-9]*);/ )[1],
+			book_name = search_book.match( /name=(.*);/ )[1],
+			cover = search_book.match( /cover=([^]*)/ )[1];
+			
+		this.read( { _id, cover, book_name: decodeURIComponent( book_name ) } );
+		
 	},
 	
 	components: 
