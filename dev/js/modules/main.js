@@ -158,20 +158,6 @@ const tab_bar =
 				<span class="fa fa-angle-double-down toggle-btn__icon"></span>
 			</button>
 			<div class="tab-bar">
-				<header class="tab-bar__header">
-					<button class="tab-bar__header-btn options-btn" @click="tabBarToggle">
-						<span class="fa fa-close"></span>
-					</button>
-					<button class="options-btn" @click="showTheTab" id="links">
-						<span class="fa fa-list"></span>
-					</button>
-					<button class="options-btn" @click="showTheTab" id="bookmards">
-						<span class="fa fa-bookmark"></span>
-					</button>
-					<button class="options-btn" @click="showTheTab" id="book_info">
-						<span class="fa fa-info"></span>
-					</button>
-				</header>
 				<div class="tab tab--active links">
 					<a v-for="link in chapters" :href="link.href" class="tab-bar__btn">{{link.label}}</a>
 				</div>
@@ -185,6 +171,17 @@ const tab_bar =
 					<img class="js-cover" v-if="cover" :src="cover" @click="viewCover">
 					<h2 class="book-name">{{ book_name }}</h2>
 				</div>
+				<footer class="tab-bar__footer">
+					<button class="options-btn" @click="showTheTab" id="links">
+						<span class="fa fa-list"></span>
+					</button>
+					<button class="options-btn" @click="showTheTab" id="bookmards">
+						<span class="fa fa-bookmark"></span>
+					</button>
+					<button class="options-btn" @click="showTheTab" id="book_info">
+						<span class="fa fa-info"></span>
+					</button>
+				</footer>
 			</div>
 		</div>
 		`
