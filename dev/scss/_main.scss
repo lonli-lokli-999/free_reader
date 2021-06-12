@@ -2,8 +2,7 @@
  * main
  *===========================================*/
 .main-content-wrap {
-flex: 1;
-height: calc( 100vh - 3rem ); }
+flex: 1; }
 
     .main-content {
     color: var( --content-color );
@@ -56,7 +55,7 @@ height: calc( 100vh - 3rem ); }
 			left: 8rem;
 			width: 2rem;
 			height: 70%;
-			background: var( --header-bg );
+			background: var( --translucent-color );
 			animation: bookmarkShow 1s; }
 
 			.bookmark:before {
@@ -65,7 +64,7 @@ height: calc( 100vh - 3rem ); }
 			position: absolute;
 			top: 100%;
 			left: 0;
-			border-top: 1rem solid var( --header-bg );
+			border-top: 1rem solid var( --translucent-color );
 			border-right: 1rem solid transparent; }
 
 			.bookmark:after {
@@ -74,7 +73,7 @@ height: calc( 100vh - 3rem ); }
 			position: absolute;
 			top: 100%;
 			left: 1rem;
-			border-top: 1rem solid var( --header-bg );
+			border-top: 1rem solid var( --translucent-color );
 			border-left: 1rem solid transparent; }
 /*
  * logo end
@@ -86,11 +85,12 @@ height: calc( 100vh - 3rem ); }
  *===========================================*/
 .book {
 flex: 1;
-max-height: calc( 100vh - 3rem );
 overflow: auto;
 scrollbar-width: none;
 scroll-behavior: smooth;
-padding: 0 1rem; }
+padding: 0 var( --book-padding ); 
+max-height: calc( 100vh - ( 1rem + var( --system-padding ) * 2 ) );
+}
 
 .book::-webkit-scrollbar {
 width: 0; }
@@ -98,8 +98,8 @@ width: 0; }
     .book section {
     padding: 3rem 0; }
     
-    .book section * {
-    font-family: var( --book-fonts );
+    .book * {
+    font-family: var( --font-family );
     font-size: var(--book-font-size); }
     
         .section-header,
@@ -116,8 +116,9 @@ width: 0; }
     .book .paragraph {
     padding: .3rem 0;
     display: block;
-    line-height: 1.5rem;
-    text-indent: 1.5rem; }
+    text-align: var( --text-align );
+    line-height: var( --line-height );
+    text-indent: var( --text-indent ); }
     
     .book epigraph:before {
     content: '\f10e';
@@ -174,14 +175,14 @@ transform: translate(0);
 }
 
     .set-page-btn {
-    color: var( --content-color );
+    color: var( --translucent-color );
     background:  var( --content-bg );
     height: 50%;
     padding: 1rem; }
     
     .set-page-btn:hover {
-    color: var( --header-color );
-    background:  var( --header-bg ); }  
+    color: var( --translucent-bg );
+    background:  var( --translucent-color ); }  
 /*
  * book tipografy end
  *===========================================*/

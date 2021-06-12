@@ -25,15 +25,9 @@ const book_area = {
 			let
 				book_el = document.querySelector( '.book' ),
 				book_height = book_el.scrollHeight,
-                all_page = Math.floor( book_height /  book_el.clientHeight ),
-                the_page = Math.ceil( book_el.scrollTop /  book_el.clientHeight );
-				the_page = the_page == 0 ? 1 : the_page;
-				
-			let
-				pages = `${the_page}/${all_page}`,
 				procent = book_el.scrollTop / book_height * 100;
 				
-			this.$emit( 'changedReadingStatus', { procent, pages } );
+			this.$emit( "changeReadingStatus", procent );
 		},
 		
 		pageUp()
@@ -63,11 +57,6 @@ const tab_bar =
 		return {
 			bookmards: null,
 		}
-	},
-	
-	mounted() {
-		if( localStorage.bookmarks && this.book_name )
-			this.bookmards = JSON.parse( localStorage.bookmarks ).filter( bookmark => bookmark.book_name == this.book_name );
 	},
 	
 	methods:
@@ -102,8 +91,7 @@ const tab_bar =
 		
 		bookmarksUpdate()
 		{
-			if( localStorage.bookmarks && this.book_name )
-				this.bookmards = JSON.parse( localStorage.bookmarks ).filter( bookmark => bookmark.book_name == this.book_name );
+			this.bookmards = LSModel.get( 'bookmark', { book: this.book_name } );
 		},
 		
 		showTheTab( ev )
@@ -128,25 +116,22 @@ const tab_bar =
 		goToBookmarks( ev )
 		{
 			let
-				bookmark_process = ev.target.getAttribute( 'data-process' ),
+				bookmark_progress = ev.target.getAttribute( 'data-progress' ),
 				book = document.querySelector( '.book' );
 				
-			book.scrollTop = book.scrollHeight / 100 * bookmark_process
+			book.scrollTop = book.scrollHeight / 100 * bookmark_progress
 		},
 		
 		deleteBookmark(ev)
 		{
 			let
-				all_bookmarks = JSON.parse( localStorage.bookmarks ),
 				the_bookmark = 
 					ev.target.getAttribute( 'data-bookmarks-id' ) ?
 					ev.target :
 					ev.target.parentElement,
 				the_bookmark_id = the_bookmark.getAttribute( 'data-bookmarks-id' );
 					
-			all_bookmarks = all_bookmarks.filter( bookmark => bookmark.id != the_bookmark_id );
-			localStorage.bookmarks = JSON.stringify( all_bookmarks );
-			
+			LSModel.del( 'bookmark', the_bookmark_id );			
 			the_bookmark.closest( '.bookmark-link' ).remove();
 		}
 	},
@@ -159,12 +144,12 @@ const tab_bar =
 			</button>
 			<div class="tab-bar">
 				<div class="tab tab--active links">
-					<a v-for="link in chapters" :href="link.href" class="tab-bar__btn">{{link.label}}</a>
+					<a v-for="link in chapters" :href="link.href" class="tab-bar__chapter">{{link.label}}</a>
 				</div>
 				<div class="tab bookmards">
 					<div v-for="link in bookmards" class="bookmark-link">
-						<button  :data-process="link.process" @click="goToBookmarks" class="tab-bar__btn">{{link.name}}</button>
-						<button class="bookmark-del" :data-bookmarks-id="link.id" @click="deleteBookmark"><span class="fa fa-minus"></span></button>
+						<button  :data-progress="link.progress" @click="goToBookmarks" class="tab-bar__chapter">{{link.name}}</button>
+						<button class="bookmark-del" :data-bookmarks-id="link.$id" @click="deleteBookmark"><span class="fa fa-minus"></span></button>
 					</div>
 				</div>
 				<div class="tab book_info">
@@ -172,13 +157,13 @@ const tab_bar =
 					<h2 class="book-name">{{ book_name }}</h2>
 				</div>
 				<footer class="tab-bar__footer">
-					<button class="options-btn" @click="showTheTab" id="links">
+					<button class="tab-toggle-btn" @click="showTheTab" id="links">
 						<span class="fa fa-list"></span>
 					</button>
-					<button class="options-btn" @click="showTheTab" id="bookmards">
+					<button class="tab-toggle-btn" @click="showTheTab" id="bookmards">
 						<span class="fa fa-bookmark"></span>
 					</button>
-					<button class="options-btn" @click="showTheTab" id="book_info">
+					<button class="tab-toggle-btn" @click="showTheTab" id="book_info">
 						<span class="fa fa-info"></span>
 					</button>
 				</footer>
@@ -205,7 +190,11 @@ export const main =
 		<main class="main-content-wrap" >
 			<div class="main-content conatiner">
 				<div v-if="book" is="tab_bar" :cover="book.cover" :chapters="chapters" :book_name="book.title"></div>
-				<div v-if="book" is="book_area" :content="book.content" @changedReadingStatus="updateReadingStatus"></div>
+				<div 
+					v-if="book" 
+					is="book_area" 
+					:content="book.content"
+					@changeReadingStatus="updateReadingStatus"></div>
 				<div v-if="!book" is="emblem"></div>
 			</div>
 		</main>
@@ -217,39 +206,12 @@ export const main =
 		'emblem': emblem,
 		'tab_bar': tab_bar
 	},
-	
-	methods: 
+
+	methods:
 	{
-		updateReadingStatus( status )
+		updateReadingStatus( new_readineg_status )
 		{
-			let
-				the_book_id = this.books_progress.findIndex( book => book.name == this.book.title );
-			
-			if( the_book_id != -1 )
-				this.books_progress[ the_book_id ].progress = status
-			else
-				this.books_progress.push( { name: this.book.title, progress: status } )
-			;
-			
-			localStorage.books_progress = JSON.stringify( this.books_progress );
-				
-			this.$emit( 'changedReadingStatus', status );
-		}
-	},
-	
-	computed:
-	{
-		books_progress: function()
-		{
-			return localStorage.books_progress ? JSON.parse( localStorage.books_progress ) : [];
-		},
-		
-		the_progress: function()
-		{
-			let
-				the_book = this.books_progress.find( book => book.name == this.book.title );
-				
-			return 	the_book ? the_book.progress : false;
+			this.$emit( "changeReadingStatus", new_readineg_status );
 		}
 	},
 	
@@ -263,20 +225,23 @@ export const main =
 			setTimeout( () => {
 				let
 					book_el = document.querySelector( '.book' );
+
+				book_el.scrollTop = this.book.progress != 0 ?
+					book_el.scrollHeight / 100 * this.book.progress :
+					0;
+
+
 				
 				this.$el.querySelectorAll( 'h2' )			
 					.forEach( ( title, id ) => {
 						title.id = `chapter_${id}`;
 						chapters.push( { label: title.innerText, href: `#chapter_${id}` } );
 					} );
-						
-				book_el.scrollTop = this.the_progress ?
-					book_el.scrollHeight / 100 * this.the_progress.procent :
-					0;
-					
+
 				this.chapters = chapters;
 			}, 2000 )
 		}
 	}
 };
 //////////////////////////////////// export main end
+

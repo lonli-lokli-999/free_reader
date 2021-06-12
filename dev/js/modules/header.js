@@ -1,4 +1,105 @@
-//////////////////////////////////// pugination
+/*
+ * function
+ *******************************************/
+const apletListGenerate = aplets =>
+{
+	let aplet_list = [];
+
+	aplets
+		.split( '; ' )
+		.forEach( item => {
+			let	
+				aplet = item.split( ', ' ),
+				name = aplet[0],
+				ico = aplet[1];
+
+			aplet_list.push( { name, ico } )
+		} );
+
+	return aplet_list
+};
+
+/*
+ * intermediate modules
+ *******************************************/
+const header_btn = 
+{
+	props: ['ico', 'clb'],
+
+	template: 
+	`
+		<button
+		@click="( clb ? clb() : toggleApletWindow() )"
+		class="options-btn"><span :class="ico"></span></button>
+	`,
+
+	methods: 
+	{
+		toggleApletWindow()
+		{
+			this.$el
+				.parentElement
+				.querySelector( '.window' )
+				.classList.toggle( 'window--active' );
+		}	
+	}
+};
+
+const header_inp = 
+{
+	data: function()
+	{
+		return { inp_value: null }
+	},
+
+	props: [ 'placeholder', 'clb' ],
+
+	template: 
+	`
+		<input 
+			class="header__inp"
+			:placeholder="placeholder" @change="writed" v-model="inp_value">
+	`,
+
+	methods: 
+	{
+		writed()
+		{
+			this.clb( this.inp_value );
+			this.inp_value = "";
+			this.$el.classList.remove( 'header__inp--active' );
+		}
+	} 
+};
+
+const color_input = 
+{
+	data: function()
+	{
+		return { curent: "#ffffff" }
+	},
+	props: [ 'name', 'clb' ],
+
+	template:
+	`
+	<div class="window__inp-el--wrap">
+		<h2 class="window__label">{{ name }}</h2>
+		<div class="box-color-inp">
+			<input type="color" v-model="curent" @change="setProperty">
+			<input class="window__inp-el" v-model="curent">
+		</div>
+	</div>
+	`,
+
+	methods: 
+	{
+		setProperty()
+		{
+			this.clb( this.name, this.curent )
+		}
+	}
+}
+
 const pugination = 
 {
 	props:
@@ -52,12 +153,12 @@ const pugination =
 	{
 		nextPage()
 		{
-				this.clb( this.curent + 1 );
+			this.clb( this.curent + 1 );
 		},
 		
 		prevPage()
 		{
-				this.clb( this.curent - 1 );
+			this.clb( this.curent - 1 );
 		},
 		
 		changePage( id )
@@ -89,409 +190,246 @@ const pugination =
 		</div>
 	`
 };
-//////////////////////////////////// pugination end
-
-//////////////////////////////////// input book aplet 
-const inp_file = 
+/*
+ * win contents module
+ *******************************************/
+const win_content_info = 
 {
-	template: 
+	template:
 	`
-	<div class="open-book options-btn">
-		<span class="fa fa-file"></span>
-		<input type="file" class="open-book__inp" @change="select">
-	</div>
-	`,
-	
-	methods: 
-	{
-		select( ev )
-		{
-			let
-				file = ev.target.files[0];		
-			this.$emit( 'select', file );
-		}
-	}
+		<div>
+			<h1>Free reader. V 4.0.1</h1>
+			<p>© MIT, 2021.</p>
+			<p><a href="https://github.com/lonli-lokli-999/free_reader">Github</a></p>
+			<p><a href="https://money.yandex.ru/to/410017268643291">Поддержать разработку</a></p>
+		</div>
+	`
 };
-//////////////////////////////////// input book aplet end
 
-//////////////////////////////////// color settings aplet
-const color_settings = 
+const color_scheme = 
 {
 	data: function()
 	{
-		return {
-			themes: null,
-			new_user_theme_name: null,
-			new_user_theme_header_bg: null,
-			new_user_theme_header_color: null,
-			new_user_theme_main_bg: null,
-			new_user_theme_main_color: null
-		}
+		return { themes: null, curent_theme: null }
 	},
-	
-	template:
+
+	template: 
 	`
-	<div>
-		<button class="options-btn" @click="setStatus"><span class="fa fa-paint-brush"></span></button>
-		<div class="window">
-			<header class="window__header">
-				<button class="window__close-btn window__btn" @click="setStatus"><i class="fa fa-close"></i></button>
-			</header>
-			
-			<main class="window__main">
-				<span class="window__label">Выберите цветовую схему</span>
-				<button v-for="( theme, id ) in themes" 
-						@click="setTheme" 
-						class="window__inp-el" 
-						:data="theme.colors" :data-theme-name="theme.name">
-					{{theme.name}}
+		<div>
+			<h2 class="window__label">Выберите цветовую схему</h2>
+			<div v-for="( theme, id ) in themes"
+				class="theme-item">
+				<span class="theme-item__title">{{theme.name}}</span>
+
+				<button
+					v-if="theme.$id"
+					@click="deleteTheme( theme )" 
+					class="window__btn" >
+					Удалить
 				</button>
-				<span class="window__label">Создать цветовую схему</span>
-				
-				<input class="window__inp-el" v-model="new_user_theme_name" placeholder="Введите имя темы">
-				
-				<div class="window__color-writer">
-					<input type="color" class="color-inp" v-model="new_user_theme_header_bg" title="Фон шапки">
-					<input type="color" class="color-inp" v-model="new_user_theme_header_color" title="Цвет шапки">
-					<input type="color" class="color-inp" v-model="new_user_theme_main_bg" title="Фон контента" >
-					<input type="color" class="color-inp" v-model="new_user_theme_main_color" title="Цвет контента" >
-				</div>
-				
-				<button class="window__btn" @click="addTheme( true )">Добавить</button>
-				<button class="window__btn" @click="addTheme( false )">Применить</button>
-			</main>
+
+				<button 
+					@click="setTheme( theme )"
+					:class="( curent_theme == theme.name ? 'window__btn--active' : '' )" 
+					class="window__btn">
+					Активировать
+				</button>
+			</div>
 		</div>
-	</div>
 	`,
-	
+
 	methods:
 	{
-		setStatus()
+		setTheme( theme )
 		{
-			this.$el
-			.querySelector( '.window' )
-			.classList.toggle( 'window--active' );
+			this.curent_theme = localStorage.def_theme_name = theme.name;
+			activateTheme( theme.colors );	
 		},
 
-		addTheme( save )
+		deleteTheme( theme )
 		{
-			let
-				new_theme = `${this.new_user_theme_header_bg} ${this.new_user_theme_header_color} ${this.new_user_theme_main_bg} ${this.new_user_theme_main_color}`;
-				
-			if( new_theme )
-				this.activeTheme( new_theme );
-
-			if( save && new_theme && this.new_user_theme_name )
-			{
-				let
-					themes = localStorage.themes ? JSON.parse( localStorage.themes ) : [],
-					to_save_new_theme =
-					{
-						name: this.new_user_theme_name,
-						colors: new_theme,
-						user: true
-					};
-
-				themes.push( to_save_new_theme );
-				this.themes.push( to_save_new_theme );
-				this.new_user_theme_name = null;
-				
-				localStorage.themes = JSON.stringify( themes );
-			};
-		},
-		
-		setTheme( ev )
-		{
-			let
-				target = ev.target,
-				data = target.getAttribute( 'data' ),
-				theme_name = target.getAttribute( 'data-theme-name' );
-			
-			this.$el
-				.querySelector( '.window__btn--active' )
-				.classList
-				.remove('window__btn--active');
-				
-			target.classList.add( 'window__btn--active' );
-			
-			this.setDefTheme( theme_name, data )
-			this.activeTheme( data );
-		},
-		
-		setDefTheme( name, colors )
-		{
-			localStorage.def_theme_name = name;
-		},
-		
-		activeTheme( data )
-		{
-			let main_css_var = document.querySelector( ':root' ).style;
-			
-			data = data.split( ' ' );
-			
-			this.new_user_theme_header_bg = data[0];
-			this.new_user_theme_header_color = data[1];
-			this.new_user_theme_main_bg = data[2];
-			this.new_user_theme_main_color = data[3];
-			
-			main_css_var.setProperty( '--header-bg', data[0] );
-			main_css_var.setProperty( '--header-color', data[1] );
-			main_css_var.setProperty( '--content-bg', data[2] );
-			main_css_var.setProperty( '--content-color', data[3] );
-			main_css_var.setProperty( '--translucent-color', `${data[3]}88` );
+			LSModel.del( 'user_themes', theme.$id );
+			this.themes = this.themes.filter( item => item.$id != theme.$id );
+			msg( `Тема: '${ theme.name }', удалена.` )
 		}
 	},
-	
-	created()
+
+	created: function()
 	{
-		let
-			user_themes = localStorage.themes ? JSON.parse( localStorage.themes ) : [];
-			
 		fetch( './data/themes.json' )
 			.then( res => res.json() )
-			.then( res => { 
-				this.themes = res.concat( user_themes );
-				let
-					def_theme = localStorage.def_theme_name ? this.themes.find( item => item.name == localStorage.def_theme_name ) : null,
-					the_them_colors = def_theme ? def_theme.colors : null;
-					
-				if( !the_them_colors )
-					localStorage.def_theme_name = this.themes[0].name,
-					the_them_colors = this.themes[0].colors;
-					
-				this.activeTheme( localStorage.def_theme ? localStorage.def_theme : the_them_colors );
-				
-				setTimeout( () => {
-					this.$el
-						.querySelectorAll( '[data-theme-name]' )
-						.forEach( ( theme_btn, id ) => {								
-							if( localStorage.def_theme )
-								if( theme_btn.getAttribute( 'data-theme-name' ) == localStorage.def_theme_name )
-									theme_btn.classList.add( 'window__btn--active' );
-									
-							if( id == 0 && !localStorage.def_theme )
-								theme_btn.classList.add( 'window__btn--active' );
-						} );
-				}, 1000 );
+			.then( res => {
+				this.themes = res.concat( LSModel.get( "user_themes" ) );
 			} );
 	}
 };
-//////////////////////////////////// color settings aplet end
 
-//////////////////////////////////// settings aplet
-const settings =
+const new_scheme = 
 {
-	data: function() {
-		let
-			data = {},
-			root = getComputedStyle( document.documentElement );
-			
-		data.system_font = root.getPropertyValue( '--system-fonts');
-		data.book_font = root.getPropertyValue( '--book-fonts');
-		data.book_font_size = root.getPropertyValue( '--book-font-size');
-		
-		return data
+	data: function()
+	{
+		return { 
+			translucent_color: '#ffffff',
+			translucent_bg: '#ffffff', 
+			header_bg: '#ffffff',
+			header_color: '#ffffff',
+			content_bg: '#ffffff',
+			content_color: '#ffffff',
+			theme_name: null }
 	},
-	
+
+	template: 
+	`
+		<div>
+			<span class="window__label">Создать цветовую схему</span>
+			
+			<input class="window__inp-el" v-model="theme_name" placeholder="Введите имя темы">
+			
+			<div class="window__color-writer">
+				<color_input :name="'translucent_bg'" :clb="setColor"></color_input>
+				<color_input :name="'translucent_color'" :clb="setColor"></color_input>
+				<color_input :name="'header_bg'" :clb="setColor"></color_input>	
+				<color_input :name="'header_color'" :clb="setColor"></color_input>	
+				<color_input :name="'content_bg'" :clb="setColor"></color_input>	
+				<color_input :name="'content_color'" :clb="setColor"></color_input>	
+			</div>
+			
+			<button class="window__btn" @click="add">Добавить</button>
+			<button class="window__btn" @click="preview">Предпросмотр</button>
+		</div>
+	`,
+
+	methods: 
+	{
+		setColor( name, value )
+		{
+			this[ name ] = value;
+		},
+
+		add()
+		{
+			if( this.theme_name == '' )
+				return false;
+
+			LSModel.set(
+				"user_themes" ,
+				{
+					name: this.theme_name,
+					colors: `${ this.header_bg } ${ this.header_color } ${ this.content_bg } ${ this.content_color } ${ this.translucent_color } ${ this.translucent_bg }`,
+				 	user: true
+				}
+			);
+
+			msg( `Тема: '${ this.theme_name }', сохранена.` );
+			this.theme_name = '';
+		},
+
+		preview()
+		{
+			activateTheme( `${ this.header_bg } ${ this.header_color } ${ this.content_bg } ${ this.content_color } ${ this.translucent_color } ${ this.translucent_bg }` );
+		}
+	},
+
+	components: 
+	{
+		color_input
+	}
+};
+
+const win_content_settings =
+{
+	data: function()
+	{
+		return { settings: null }
+	},
+
 	template:
 	`
 	<div>
-		<button @click="setStatus" class="options-btn"><span class="fa fa-cogs"></span></button>
-		<div class="window">
-			<header class="window__header">
-				<button class="window__close-btn window__btn" @click="setStatus"><i class="fa fa-close"></i></button>
-			</header>
-			
-			<main class="window__main">
-				<span class="window__label">Размер шрифта</span>
-				<input class="window__inp-el" placeholder="Размер шрифта" v-model="book_font_size">
-				
-				<span class="window__label">Шрифт книги</span>
-				<input class="window__inp-el" placeholder="Шрифт книги" v-model="book_font">
-				
-				<span class="window__label">Системный шрифт</span>
-				<input class="window__inp-el" placeholder="Системный шриф" v-model="system_font">
-				
-				<span class="window__label">Выравнивание</span>
-				 <div class="align-book-text">
-					<button class="align-book-text__btn window__inp-el window__btn--active" data="left" @click="setAlign"><span class="fa fa-align-left"></span></button>
-					<button class="align-book-text__btn window__inp-el" data="right" @click="setAlign"><span class="fa fa-align-right"></span></button>
-					<button class="align-book-text__btn window__inp-el" data="center" @click="setAlign"><span class="fa fa-align-center"></span></button>
-					<button class="align-book-text__btn window__inp-el" data="justify" @click="setAlign" ><span class="fa fa-align-justify"></span></button>
-				</div>
-			</main>
+		<div
+			v-for="( sett, id ) in settings" 
+			class="inp-settings-box">
+			<span class="window__label" >{{ sett.title }} </span>
+			<div class="window__inp-el-wrap">
+				<input
+				@change="setProperty" 
+				:data="sett.css"
+				:placeholder="sett.title"
+				:value="sett.value"
+				class="window__inp-el">
+				<button 
+				v-if="sett.options"
+				@click="toggleOptions"
+				class="options-list__toggle">
+				<span class="fa fa-angle-double-down"></span></button>
+				<ul 
+					v-if="sett.options"
+					:class="( 5 == id ? 'options-list--last' : '')"
+					class="options-list">
+					<li
+						class="options-list__item"
+						@click="selectOption"
+						:data="option"
+						v-for="option in sett.options.split( ' ' )">
+						{{ option }}
+					</li>
+				</ul>
+			</div>
 		</div>
 	</div>
 	`,
-	
-	methods:
+
+	methods: 
 	{
-		setStatus()
+		toggleOptions( ev )
 		{
-			this.$el
-			.querySelector( '.window' )
-			.classList.toggle( 'window--active' )
+			ev
+			.target
+			.closest( '.window__inp-el-wrap' )
+			.querySelector( '.options-list' )
+			.classList
+			.toggle( "options-list--active" );
 		},
-		
-		setAlign( ev )
+
+		selectOption( ev )
 		{
 			let
-				target =	ev.target.tagName == 'BUTTON' ?
-							ev.target : 
-							ev.target.closest('button'),
-				align = target.getAttribute('data');
-				
-			this.$el
-				.querySelector('.window__btn--active')
-				.classList.remove( 'window__btn--active' );
-				
-			this.$el
-				.querySelector( `[data="${align}"]` )
-				.classList.add( 'window__btn--active' );
-				
+				inp_el = ev.target
+					.closest( '.window__inp-el-wrap' )
+					.querySelector( '.window__inp-el' ),			
+				property = inp_el.getAttribute( "data" ),
+				value = ev.target.getAttribute( "data" );
+
+			inp_el.value = value;
+
+			this.setProperty( false, { property, value } );
+			this.toggleOptions( ev );
+		},
+
+		setProperty( ev, data )
+		{
+			let
+				property = !data ? ev.target.getAttribute( "data" ) : data.property,
+				value = !data ? ev.target.value : data.value;
+
 			document
-				.querySelector('.book')
-				.style.textAlign = align;
+				.querySelector( ':root' )
+				.style
+				.setProperty( property, value );
+
+
+			settingsModel.set( property, value );
 		}
 	},
-	
-	watch: {
-		system_font( val ){
-			document
-				.querySelector( ':root' )
-				.style
-				.setProperty( '--system-fonts', val );
-		},
-		
-		book_font( val ){
-			document
-				.querySelector( ':root' )
-				.style
-				.setProperty( '--book-fonts', val );
-		},
-		
-		book_font_size( val ){
-			document
-				.querySelector( ':root' )
-				.style
-				.setProperty( '--book-font-size', val );
-		}
+
+	created: function()
+	{
+		fetch( "./data/settings.json" )
+			.then( res => res.json() )
+			.then( res => this.settings = res );	
 	}
 };
-//////////////////////////////////// settings aplet end
 
-//////////////////////////////////// reading status aplet
-const reading_status_aplet =
-{
-props: ['reading_status'],
-	
-	template:
-	`
-	<div class="reading-status-aplet">
-		<span class="print-status options-btn" @click="toggleInp">{{ reading_status.pages }}</span>
-		
-		<input class="reading-status__inp" placeholder="Прейти к ..." @change="setReadingStatus()">
-		
-		<div class="reading-status-grafic" @click="setBookProgressInProcent">
-			<span class="reading-status-grafic__progress-line" :style="'width:'+reading_status.procent+'%'"></span>
-		</div>
-	</div>
-	`,
-	
-	methods:
-	{
-		setBookProgressInProcent(ev)
-		{
-			let
-				book_el = document.querySelector( '.book' ),
-				progress_bar = document.querySelector( '.reading-status-grafic' ),
-				progress_bar_width = progress_bar.clientWidth,
-				click_coard_x = ev.layerX,
-				new_reading_status_procent = click_coard_x / progress_bar_width * 100;
-			
-			book_el.scrollTop = book_el.scrollHeight / 100 * new_reading_status_procent;
-		},
-		
-		setReadingStatus()
-		{
-			let
-				reg = /[0-9]/,
-                book_el = document.querySelector( '.book' ),
-				inp_value = document.querySelector( '.reading-status__inp' ).value,
-                scrolling_now = book_el.clientHeight * ( inp_value-1 ) + 1;
-                
-				if( inp_value !== '' && reg.test( inp_value ) )
-					book_el.scrollTop = scrolling_now;
-					
-				document.querySelector( '.reading-status__inp' ).value = null
-		},
-		
-		toggleInp()
-		{
-			document
-				.querySelector( '.reading-status__inp' )
-				.classList.toggle( 'reading-status__inp--active' );
-		}
-	}
-};
-//////////////////////////////////// reading status aplet end
-
-//////////////////////////////////// bookmarks aplet
-const bookmarks = 
-{
-	props: ['book_name'],
-	
-	data: function()
-	{
-		return {
-			bookmark_name: null
-		}
-	},
-	
-	template:
-	`
-	<div class="bookmarks-aplet">
-		<button class="options-btn" @click="toggleInp"><span class="fa fa-bookmark"></span></button>
-		<input class="bookmarks__inp" placeholder="Имя закладки ..." v-model="bookmark_name" @change="saveBookmark">
-	</div>
-	`,
-	
-	methods:
-	{
-		toggleInp()
-		{
-			this.$el
-				.querySelector( '.bookmarks__inp' )
-				.classList.toggle( 'bookmarks__inp--active' );
-		},
-		
-		saveBookmark()
-		{
-			if( !this.bookmark_name )
-				return;	
-				
-			let
-				all_bookmarks = localStorage.bookmarks ? JSON.parse( localStorage.bookmarks ) : [],
-				book = document.querySelector( '.book' ),
-				new_bookmark = 
-				{
-					id: new Date().getTime(),
-					name: this.bookmark_name,
-					process: book.scrollTop / book.scrollHeight * 100,
-					book_name: this.book_name
-				};
-			
-			all_bookmarks.push( new_bookmark );
-			localStorage.bookmarks = JSON.stringify( all_bookmarks );
-			
-			this.bookmark_name = null;
-			this.toggleInp();
-		}
-	}
-};
-//////////////////////////////////// bookmarks aplet end
-
-//////////////////////////////////// flibusta aplet
 const flibusta =
 {
 data: function()
@@ -507,55 +445,45 @@ data: function()
 	
 	template:
 	`
-	<div class="flibusta-aplet">
-		<button @click="toggleBookSearchBox" class="options-btn">
-			<span class="fa fa-search"></span>
-		</button>
-
-		<div class="flibusta-aplet__search-box window">
-			<header class="window__header">
-				<div class="search">
-					<input class="search__inp-el" placeholder="Введите название книги." v-model="search_str" @change="getBooks">
-					<button class="search__btn" @click="getBooks"><i class="fa fa-search"></i></button>
-				</div>
-				<button class="window__close-btn window__btn" @click="toggleBookSearchBox"><i class="fa fa-close"></i></button>
-			</header>
-
-			<main class="window__main">
-				<div class="books-list">
-					<div
-						v-for="book in books" 
-						class="books-list-item" 
-						:style="('background-image: url('+book.cover+');')">
-						<main class="books-list-item__main">
-							<p>{{ book.book_name }}</p>
-							<p>{{ book.author }}</p>
-						</main>
-						<footer class="books-list-item__footer">
-							<button class="footer__btn" @click="read( book )"><i class="fa fa-book"></i></button>
-							<button class="footer__btn" @click="save( book )"><i class="fa fa-save"></i></button>
-							<div class="book__downloads">
-								<button class="footer__btn" @click="toggleDownloadsLinks"><i class="fa fa-download"></i></button>
-								<div class="book__downloads-links">
-									<a class="footer__btn" :href="(book.link + '/fb2')" target="_blank">Fb2</a>
-									<a class="footer__btn" :href="(book.link + '/epub')" target="_blank">Epub</a>
-									<a class="footer__btn" :href="(book.link + '/mobi')" target="_blank">Mobi</a>
-								</div>
-							</div>					
-							<button class="footer__btn" @click="share( book )"><i class="fa fa-share-alt"></i></button>
-							<button v-if="book.seria != ''" class="footer__btn" @click="getTheSeria( book.seria )"><i class="fa fa-angle-double-right"></i></button>
-						</footer>
-					</div>
-				</div>
-				
-				<div is="pugination"
-					:total="total"
-					:step="step"
-					:curent="curent"
-					:clb="changePage"
-				></div>
-			</main>
+	<div>
+		<header class="flibusta-header">
+			<div class="search">
+				<input class="search__inp-el" placeholder="Найти..." v-model="search_str" @change="getBooks">
+				<button class="search__btn" @click="getBooks"><i class="fa fa-search"></i></button>
+			</div>
+			<div is="pugination"
+				:total="total"
+				:step="step"
+				:curent="curent"
+				:clb="changePage">
+			</div>
+		</header>
+		<div class="books-list">
+			<div
+				v-for="book in books" 
+				class="books-list-item" 
+				:style="('background-image: url('+book.cover+');')">
+				<main class="books-list-item__main">
+					<p>{{ book.book_name }}</p>
+					<p>{{ book.author }}</p>
+				</main>
+				<footer class="books-list-item__footer">
+					<button class="footer__btn" @click="read( book )"><i class="fa fa-book"></i></button>
+					<button class="footer__btn" @click="save( book )"><i class="fa fa-save"></i></button>
+					<div class="book__downloads">
+						<button class="footer__btn" @click="toggleDownloadsLinks"><i class="fa fa-download"></i></button>
+						<div class="book__downloads-links">
+							<a class="footer__btn" :href="(book.link + '/fb2')" target="_blank">Fb2</a>
+							<a class="footer__btn" :href="(book.link + '/epub')" target="_blank">Epub</a>
+							<a class="footer__btn" :href="(book.link + '/mobi')" target="_blank">Mobi</a>
+						</div>
+					</div>					
+					<button class="footer__btn" @click="share( book )"><i class="fa fa-share-alt"></i></button>
+					<button v-if="book.seria != ''" class="footer__btn" @click="getTheSeria( book.seria )"><i class="fa fa-angle-double-right"></i></button>
+				</footer>
+			</div>
 		</div>
+	
 	</div>
 	`,
 	
@@ -579,9 +507,7 @@ data: function()
 		},
 		
 		getTheSeria( seria_id )
-		{
-			this.$el.querySelector( '.flibusta-aplet .window__main' ).scrollTop = 0;
-			
+		{			
 			fetch( `/seria/${ seria_id }` )
 				.then( res => res.json() )
 				.then( res => {
@@ -594,8 +520,6 @@ data: function()
 		
 		changePage( next_page )
 		{			
-			this.$el.querySelector( '.flibusta-aplet .window__main' ).scrollTop = 0;
-			
 			fetch( `/search/${ this.search_str }/${next_page}` )
 				.then( res => res.json() )
 				.then( res => { 
@@ -626,8 +550,6 @@ data: function()
 			let
 				{book_name, cover, main_url, _id } = book;
 
-			console.log(cover);
-
 			fetch( `/read/${ _id }` )
 				.then( res => res.text() )
 				.then( res => {
@@ -638,23 +560,18 @@ data: function()
 							title: book_name
 						};
 						
-					this.$emit( 'libopen', book );
+					this.$root.book = book;
+					
+					console.log( this.$root )
 				} )
 		},
 		
 		save( book )
 		{
 			let
-				books = localStorage.books ?
-						JSON.parse( localStorage.books ) :
-						[],
-				saved = books.find( item => item._id == book._id ),
 				{ _id, book_name, cover, author, link } = book;
-
-			books.push( { _id, book_name, cover, author, link } );
-
-			if( !saved )
-				localStorage.books = JSON.stringify( books );
+				
+			LSModel.set( "books", { _id, book_name, cover, author, link } );
 		},
 		
 		share( book )
@@ -696,55 +613,41 @@ data: function()
 		'pugination': pugination
 	}
 };
-//////////////////////////////////// flibusta aplet end
 
-//////////////////////////////////// my books aplet
 const my_books =
 {
 	data: function()
 	{
-		return { books: null }
+		return { my_books: null }
 	},
 	
 	template:
 	`
-	<div class="my-books-aplet">
-		<button @click="toggleMyBook" class="options-btn">
-			<span class="fa fa-save"></span>
-		</button>
-
-		<div class="flibusta-aplet__search-box window">
-			<header class="window__header">
-				<button class="window__close-btn window__btn" @click="toggleMyBook"><i class="fa fa-close"></i></button>
-			</header>
-
-			<main class="window__main">
-				<div class="books-list">
-					<div
-						v-for="book in books" 
-						class="books-list-item" 
-						:style="('background-image: url('+book.cover+');')">
-						<main class="books-list-item__main">
-							<p>{{ book.book_name }}</p>
-							<p>{{ book.author }}</p>
-						</main>
-						<footer class="books-list-item__footer">
-							<button class="footer__btn" @click="read( book )"><i class="fa fa-book"></i></button>
-							<button class="footer__btn" @click="remove( book )"><i class="fa fa-remove"></i></button>
-							<div class="book__downloads">
-								<button class="footer__btn" @click="toggleDownloadsLinks"><i class="fa fa-download"></i></button>
-								<div class="book__downloads-links">
-									<a class="footer__btn" :href="(book.link + '/fb2')">Fb2</a>
-									<a class="footer__btn" :href="(book.link + '/epub')">Epub</a>
-									<a class="footer__btn" :href="(book.link + '/mobi')">Mobi</a>
-								</div>
+		<div>
+			<div class="books-list">
+				<div
+					v-for="book in my_books" 
+					class="books-list-item" 
+					:style="('background-image: url('+book.cover+');')">
+					<main class="books-list-item__main">
+						<p>{{ book.book_name }}</p>
+						<p>{{ book.author }}</p>
+					</main>
+					<footer class="books-list-item__footer">
+						<button class="footer__btn" @click="read( book )"><i class="fa fa-book"></i></button>
+						<button class="footer__btn" @click="remove( book )"><i class="fa fa-remove"></i></button>
+						<div class="book__downloads">
+							<button class="footer__btn" @click="toggleDownloadsLinks"><i class="fa fa-download"></i></button>
+							<div class="book__downloads-links">
+								<a class="footer__btn" :href="(book.link + '/fb2')">Fb2</a>
+								<a class="footer__btn" :href="(book.link + '/epub')">Epub</a>
+								<a class="footer__btn" :href="(book.link + '/mobi')">Mobi</a>
 							</div>
-						</footer>
-					</div>
+						</div>
+					</footer>
 				</div>
-			</main>
+			</div>
 		</div>
-	</div>
 	`,
 	
 	methods:
@@ -760,7 +663,7 @@ const my_books =
 		
 		booksUpdate()
 		{
-			this.books = localStorage.books ? JSON.parse( localStorage.books ) : [];
+			this.my_books = LSModel.get( "books" );
 		},
 
 		toggleDownloadsLinks( ev )
@@ -787,92 +690,370 @@ const my_books =
 							title: book_name
 						};
 						
-					this.$emit( 'libopen', book );
+					this.$root.book = book;
 				} )
 		},
 		
 		remove( book )
 		{
-			let
-				books = localStorage.books ?
-						JSON.parse( localStorage.books ) :
-						[];
-				
-			books = books.filter( item => item._id != book._id );
-			
-			localStorage.books = JSON.stringify( books );
+			LSModel.del( "books", book._id );
 		}
+	},
+	
+	created: function()
+	{
+		this.booksUpdate()
 	}
 };
-//////////////////////////////////// my books end
 
-//////////////////////////////////// info
-const info = 
+/*
+ * aplet creator module
+ * use for create construnted module
+ *******************************************/
+const aplet_creator = 
+{
+	props: ['aplet_list'],
+
+	template: 
+	`
+	<div>
+		<header class="aplet-list__header">
+			<button
+			v-for="aplet in aplet_list"
+			class="options-btn"
+			@click="setTab( aplet.name )"
+			><span :class="aplet.ico"></span></button>
+		</header>
+		<main>
+			<div
+				v-for="( aplet, item ) in aplet_list"
+				class="aplet-list__item"
+				:class="(item == 0 ? 'aplet-list__item--active' : '')"
+				:id="aplet.name"
+				:is="aplet.name" >
+			</div>
+		</main>
+	</div>
+	`,
+
+	methods:
+	{
+		setTab( aplet_id )
+		{
+			this.$el.querySelector( '.aplet-list__item--active' )
+				.classList.remove( 'aplet-list__item--active' );
+
+			this.$el.querySelector( `#${aplet_id}` )
+				.classList.add( 'aplet-list__item--active' );
+		}	
+	},
+
+	components: 
+	{ 
+		color_scheme,
+		new_scheme,
+		flibusta,
+		my_books
+	}
+};
+
+/*
+ * win module
+ *******************************************/
+const win =
+{
+	props: ['content', 'ful_width'],
+
+	template:
+	`
+	<div class="window"
+		:class="( ful_width ? 'window--ful-width' : '' )"
+	>
+		<header class="window__header">
+			<button 
+				class="window__close-btn options-btn"
+				@click="winClose"><span class="fa fa-close"></span></button>
+		</header>
+		<main class="window__main">
+			<div 
+				v-if="typeof content == 'string'"
+				:is="content"></div>
+
+			<div 
+				v-if="typeof content == 'object'"
+				is="aplet_creator"
+				:aplet_list="content"></div>
+		</main>
+	</div>
+	`,
+
+	methods: 
+	{
+		winClose()
+		{
+			this.$el.classList.remove( 'window--active' )
+		}
+	},
+
+	components: 
+	{ 
+		aplet_creator,
+		win_content_settings,
+		win_content_info
+	}
+};
+
+/*
+ * widget modules
+ * constructed widget elements of header
+ *******************************************/
+
+// settings aplet
+const settings_aplet =
+{
+	data: function() 
+	{
+		return { settings: null }
+	},
+
+	template:
+	`
+	<div>
+		<header_btn :ico="'fa fa-cogs'"></header_btn>
+		<win :content="'win_content_settings'"></win>
+	</div>
+	`,
+
+	components: { header_btn, win }
+};
+
+// colors aplet
+const colors_aplet =
 {
 	template:
 	`
 	<div>
-		<button @click="setStatus" class="options-btn"><span class="fa fa-info"></span></button>
-		<div class="window">
-			<header class="window__header">
-				<button class="window__close-btn window__btn" @click="setStatus"><i class="fa fa-close"></i></button>
-			</header>
-			<main class="window__main">
-				<h2 class="window__label">О приложении - Free reader</h2>
-				<p>V - 3.0.0</p>
-				<p>Free reader - это безплатное веб приложение с открытым исходным кодом.</p>
-				<p>Программа предаставляет возможность:</p>
-				<p>чтения форматов fb2, epub, txt;</p>
-				<p>поиск книг по базе данных flibusta;</p>
-				<p>гибкие настройки интерфейса;</p>
-				<h2 class="window__label">Ссылки</h2>
-				<ul>
-					<li><a href="https://github.com/lonli-lokli-999/open-fb2-web">Github</a></li>
-					<li><a href="https://money.yandex.ru/to/410017268643291">Поддержать разработку</a></li>
-				</ul>
-			</main>
-		</div>
+		<header_btn :ico="'fa fa-paint-brush'"></header_btn>
+		<win :content="the_component_list"></win>
+	</div>
+	`,
+
+	components: { header_btn, win },
+
+	computed:
+	{
+		the_component_list()
+		{
+			return apletListGenerate( 
+				"color_scheme, fa fa-list; new_scheme, fa fa-plus"
+			);
+		}
+	}
+};
+
+// colors aplet
+const libres_aplet =
+{
+	template:
+	`
+	<div>
+		<header_btn :ico="'fa fa-book'"></header_btn>
+		<win :content="the_component_list" :ful_width="true"></win>
+	</div>
+	`,
+
+	components: { header_btn, win },
+
+	computed:
+	{
+		the_component_list()
+		{
+			return apletListGenerate( 
+				"flibusta, fa fa-search; my_books, fa fa-save"
+			);
+		}
+	}
+};
+
+// inp book aplet
+const inp_file_aplet = 
+{
+	template: 
+	`
+	<div class="options-btn open-book">
+		<span class="fa fa-file"></span>
+		<input type="file" class="open-book__inp" @change="select">
 	</div>
 	`,
 	
-	methods:
+	methods: 
 	{
-		setStatus()
+		select( ev )
 		{
-			this.$el
-			.querySelector( '.window' )
-			.classList.toggle( 'window--active' )
+			let
+				file = ev.target.files[0];		
+			this.$emit( 'select', file );
 		}
-	}	
+	}
 };
-//////////////////////////////////// info end
 
-//////////////////////////////////// export header
-export const header = 
+// info aplet
+const info_aplet = 
 {
-	props: ['reading_status', 'book_name'],
-	
+	template:
+	`
+	<div>
+		<header_btn :ico="'fa fa-info'"></header_btn>
+		<win :content="'win_content_info'"></win>
+	</div>
+	`,
+
+	components: { header_btn, win }
+};
+
+// reading status aplet
+const reading_status_aplet =
+{
 	data: function()
 	{
-		return { book_open: false }
+		return { reading_status: null }
 	},
+
+	props: [ 'curent_reading_status' ],
+
+	template:
+	`
+	<div class="reading-status-aplet">
+		<span class="options-btn print-status" @click="toggleInp">{{ reading_status }}</span>
+		<header_inp :placeholder="'Перейти к...'" :clb="goTo"></header_inp>
+
+		<div class="reading-status-grafic" @click="progressLineChange">
+			<span 
+				class="reading-status-grafic__progress-line"></span>
+		</div>
+	</div>
+	`,
+
+	methods: 
+	{
+		goTo( coard )
+		{
+			let
+				reg = /[0-9]/,
+                book_el = document.querySelector( '.book' ),
+                scrolling_now = book_el.clientHeight * ( coard-1 ) + 1;
+                
+			if( coard !== '' && reg.test( coard ) )
+				book_el.scrollTop = scrolling_now;
+		},
+
+		progressLineChange( ev )
+		{
+			let
+				book_el = document.querySelector( '.book' ),
+				progress_bar = document.querySelector( '.reading-status-grafic' ),
+				progress_bar_height = progress_bar.clientHeight,
+				click_coard_y = ev.layerY,
+				new_reading_status_procent = click_coard_y / progress_bar_height * 100;
+			
+			if( book_el )
+				book_el.scrollTop = book_el.scrollHeight / 100 * new_reading_status_procent;
+		},
+
+		toggleInp()
+		{
+			this.$el.querySelector( '.header__inp' )
+				.classList.toggle( 'header__inp--active' );
+		}
+	},
+
+	watch: 
+	{
+		curent_reading_status( new_status )
+		{
+			let
+				book_el = document.querySelector( '.book' ),
+				progress_line = document.querySelector( '.reading-status-grafic__progress-line' ),
+				book_height = book_el.scrollHeight,
+                total_pages = Math.floor( book_height /  book_el.clientHeight ),
+                curen_page = Math.ceil( book_el.scrollTop / book_el.clientHeight );
+
+			if( curen_page < 1 )
+				curen_page = 1;
+
+			progress_line.style.height = `${new_status}%`;
+
+			this.reading_status = `${curen_page}/${total_pages}`;
+		}
+	},
+
+	components: { header_inp }
+};
+
+// reading status aplet
+const bookmark_aplet =
+{
+	props: [ 'curent_reading_status' ],
+
+	template:
+	`
+	<div class="reading-status-aplet">
+		<button class="options-btn" @click="toggleInp"><span class="fa fa-bookmark"></span></button>
+		<header_inp :placeholder="'Имя новой закладки'" :clb="addBookmark"></header_inp>
+	</div>
+	`,
+
+	methods: 
+	{
+		addBookmark( bookmark_name )
+		{
+			if( bookmark_name == '' && !bookmark_name )
+				return false
+
+			let
+                book_el = document.querySelector( '.book' ),
+                progress = book_el.scrollTop / book_el.scrollHeight * 100;
+
+            LSModel.set( 'bookmark', { book: this.$root.book.title, name: bookmark_name, progress } );
+            msg( `Добавлена закладка '${bookmark_name}' в книге: '${ this.$root.book.title }'` );
+		},
+
+		toggleInp()
+		{
+			this.$el.querySelector( '.header__inp' )
+				.classList.toggle( 'header__inp--active' );
+		}
+	},
+	components: { header_inp }
+};
+
+/*
+ * header module
+ *******************************************/
+export const header = 
+{
+	props: ['curent_reading_status', 'book_open'],
 	
 	template: 
 	`
-		<header class="main-header-wrap" >
+		<header 
+			class="main-header-wrap" >
 			<div class="main-header conatiner">
 				<div 
 					class="options"
-					:class="( book_open ? 'options--active': '' )"
+					:class="book_open ? 'options--active' : ''"
 					>
-					<div is="inp_file" @select="selectFile"></div>
-					<div is="flibusta" @libopen="bookOpen"></div>
-					<div is="my_books" @libopen="bookOpen"></div>
-					<div v-if="book_open" is="bookmarks" :book_name="book_name"></div>
-					<div is="settings"></div>
-					<div is="color_settings"></div>
-					<div is="info"></div>
-					<div v-if="reading_status" is="reading_status_aplet" :reading_status="reading_status"></div>
+					<inp_file_aplet @select="selectFile" ></inp_file_aplet>
+					<libres_aplet></libres_aplet>
+					<bookmark_aplet v-if="curent_reading_status != undefined"></bookmark_aplet>
+					<div 
+						v-if="curent_reading_status != undefined"
+						is="reading_status_aplet" 
+						:curent_reading_status="curent_reading_status">
+					</div>
+					<settings_aplet></settings_aplet>
+					<colors_aplet></colors_aplet>
+					<info_aplet></info_aplet>
 				</div>
 			</div>
 		</header>
@@ -880,14 +1061,13 @@ export const header =
 	
 	components: 
 	{
-		'inp_file': inp_file,
-		'color_settings': color_settings,
-		'settings': settings,
-		'reading_status_aplet': reading_status_aplet,
-		'flibusta': flibusta,
-		'my_books': my_books,
-		'bookmarks': bookmarks,
-		'info': info
+		inp_file_aplet,
+		reading_status_aplet,
+		settings_aplet,
+		colors_aplet,
+		info_aplet,
+		libres_aplet,
+		bookmark_aplet
 	},
 	
 	methods:
@@ -895,17 +1075,7 @@ export const header =
 		selectFile( file )
 		{
 			if( file )
-				this.$emit( 'select', file );
-				
-			this.book_open = file ? true : false;
-		},
-		
-		bookOpen( book )
-		{
-			this.$emit( 'flibopen', book );
-			
-			this.book_open = true;
+				this.$emit( 'select', file ),
 		}
 	}
 };
-//////////////////////////////////// export header

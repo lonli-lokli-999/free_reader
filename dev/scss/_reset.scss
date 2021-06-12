@@ -2,7 +2,7 @@ body {
 display: flex;
 flex-direction: column;
 height: 100vh;
-font-family: var( --system-fonts );
+font-family: var( --font-family );
 background: var( --content-bg ); }
 
 :root {
@@ -58,7 +58,10 @@ border: none;
 background: var( --header-color );
 width: 2rem;
 height: 2rem;
-border-radius: 50%; }
+border-radius: 50%; 
+box-shadow: 0 0 .5rem var(--content-color);
+margin-right: .5rem;
+}
 
 input[type="color"]::-webkit-color-swatch-wrapper {
 padding: 0; }
@@ -81,7 +84,10 @@ max-width: 1200px;
 margin: 0 auto; }
 
 .app {
-height: 100vh; }
+height: 100vh; 
+display: flex;
+flex-direction: column;
+}
 
 @keyframes emblemShow {
 	0% {
@@ -91,6 +97,18 @@ height: 100vh; }
 	opacity: 1;
 	}
 }
+
+.b-msg {
+position: fixed;
+top: 3.5rem;
+right: .5rem;
+z-index: 3;
+background: var( --content-bg );
+color: var( --content-color );
+box-shadow: 0 0 .5rem var( --content-color );
+padding: 1rem 2rem;
+border-redius: .2rem;
+animation: move-to-left .5s; }
 
 @keyframes emblemLabelRotate {
 	0% {
