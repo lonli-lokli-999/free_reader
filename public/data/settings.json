@@ -1,6 +1,7 @@
 [
 	{ "css":"--system-padding","title":"Отступ системных элементов","value":"1rem", "options": ".5rem .7rem 1rem" },
 	{ "css":"--book-font-size","title":"Размер шрифта","value":"1rem", "options": "1rem 1.5rem 2rem" },
+	{ "css":"--container-width","title":"Ширина контейнера","value":"1200px", "options": "800px 1000px" },
 	{ "css":"--book-padding","title":"Поля книги","value":"1rem", "options": "1rem 1.5rem 2rem" },
 	{ "css":"--font-family","title":"Шрифт","value":"Sans-serif", "options": "Sans-serif Serif Ubuntu" },
 	{ "css":"--text-indent","title":"Отступ первой строки","value":"1rem", "options": "0 .5rem 1rem" },
