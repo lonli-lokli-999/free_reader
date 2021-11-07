@@ -689,6 +689,15 @@ const my_books =
 							cover: cover,
 							title: book_name
 						};
+					
+					setTimeout( () => {
+						let
+							last_progress = readingStatus.last( book.title ),
+							book_el = document.querySelector( '.book' );
+							
+						book_el.scrollTop = last_progress != 0 ?
+						book_el.scrollHeight / 100 * last_progress : 0;
+					}, 2000 );
 						
 					this.$root.book = book;
 				} )
@@ -1075,7 +1084,7 @@ export const header =
 		selectFile( file )
 		{
 			if( file )
-				this.$emit( 'select', file ),
+				this.$emit( 'select', file );
 		}
 	}
 };

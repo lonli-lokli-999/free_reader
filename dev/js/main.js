@@ -215,7 +215,6 @@ const app = new Vue({
 	{
 		book_open()
 		{
-			console.log( 'Computed book open' )
 			return this.book ? true : false
 		}
 	},
@@ -255,6 +254,8 @@ const app = new Vue({
 		{
 			book.progress = readingStatus.last( book.title );
 			this.book = book;
+			
+			console.log( book );
 		},
 
 		changeReadingStatus( new_reading_status )

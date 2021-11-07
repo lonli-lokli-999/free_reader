@@ -218,7 +218,7 @@ export const main =
 	watch:
 	{
 		book()
-		{			
+		{		
 			let
 				chapters	= [];
 				
@@ -227,11 +227,8 @@ export const main =
 					book_el = document.querySelector( '.book' );
 
 				book_el.scrollTop = this.book.progress != 0 ?
-					book_el.scrollHeight / 100 * this.book.progress :
-					0;
-
-
-				
+					book_el.scrollHeight / 100 * this.book.progress : 0;
+	
 				this.$el.querySelectorAll( 'h2' )			
 					.forEach( ( title, id ) => {
 						title.id = `chapter_${id}`;
