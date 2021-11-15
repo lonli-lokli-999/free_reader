@@ -271,3 +271,9 @@ const app = new Vue({
 
 installDefaultSettings();
 installDefaultTheme();
+
+
+
+
+
+
