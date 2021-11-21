@@ -193,6 +193,41 @@ const pugination =
 /*
  * win contents module
  *******************************************/
+const registration_win = 
+{
+	data: function()
+	{
+		return { auth: null }
+	},
+	
+	template:
+	`
+	<div>
+		<h2 class="window__label">Выберите цветовую схему</h2>
+		<p>Приложение подддеривает синхронизацию через Google аккаунт. Будут синхронизированны сохраненыые книги и прогрес чтения каждой из них.</p>
+		<button 
+			@click="login"
+			class="window__btn"><span class="fa fa-google"></span> {{ auth == null ? 'Вход' : 'Выход' }}</button>
+	</div>
+	`,
+	
+	methods: 
+	{
+		login()
+		{
+			let config =
+			{
+			   'client_id': '473312658959-2mc4qqk7gr7i8eukmpmjere4s5cav161.apps.googleusercontent.com',
+			   'scope': 'https://www.googleapis.com/auth/drive.file'
+			};
+			 
+			gapi.auth.authorize(config, function() {
+				console.log(gapi.auth);
+			});
+		}
+	}
+};
+
 const win_content_info = 
 {
 	template:
@@ -808,7 +843,8 @@ const win =
 	{ 
 		aplet_creator,
 		win_content_settings,
-		win_content_info
+		win_content_info,
+		registration_win
 	}
 };
 
@@ -999,6 +1035,20 @@ const reading_status_aplet =
 	components: { header_inp }
 };
 
+// registration aplet
+const registration_aplet = 
+{
+	template:
+	`
+	<div style="display: none">
+		<header_btn :ico="'fa fa-user'"></header_btn>
+		<win :content="'registration_win'"></win>
+	</div>
+	`,
+
+	components: { header_btn, win }
+};
+
 // reading status aplet
 const bookmark_aplet =
 {
@@ -1063,6 +1113,7 @@ export const header =
 					<settings_aplet></settings_aplet>
 					<colors_aplet></colors_aplet>
 					<info_aplet></info_aplet>
+					<registration_aplet></registration_aplet>
 				</div>
 			</div>
 		</header>
@@ -1076,7 +1127,8 @@ export const header =
 		colors_aplet,
 		info_aplet,
 		libres_aplet,
-		bookmark_aplet
+		bookmark_aplet,
+		registration_aplet
 	},
 	
 	methods:
