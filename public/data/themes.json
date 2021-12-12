@@ -1,9 +1,8 @@
 [
-	{"name": "Default", "colors": "#8C2A3C #D9C1B4 #D9C1B4 #26181A #8C2A3Caa #ffffff"},
-	{"name":"Arc","colors":"#4a5064 #e8e8e8 #2e3543 #c3c3c3aa #ffffff"},
-	{"name":"Numix","colors":"#fdf3e8 #f57d49 #40392f #978562 #fdf3e8aa #ffffff"},
-	{"name":"Albedo","colors":"#a22a2d #ffffff #ffffff #808080 #a22a2daa #ffffff"},
-	{"name":"New Dark","colors":"#282d39 #e8e8e8 #2c3441 #c3c3c3 #282d39aa #ffffff"},
-	{"name":"Vilet","colors":"#9b4d6f #ffffff #f2f2f2 #808080 #9b4d6faa #ffffff"},
-	{"name":"Vilet Dark","colors":"#9b4d6f #e8e8e8 #2c3441 #bbbbbb #9b4d6faa #ffffff"}
+	{"name": "Default", "colors": "#8C2A3C #D9C1B4 #D9C1B4 #26181A #8C2A3C"},
+	{"name":"Arc","colors":"#4a5064 #e8e8e8 #2e3543 #c3c3c3"},
+	{"name":"Albedo","colors":"#a22a2d #ffffff #ffffff #808080 #a22a2d"},
+	{"name":"New Dark","colors":"#282d39 #e8e8e8 #2c3441 #c3c3c3 #282d39"},
+	{"name":"Vilet","colors":"#9b4d6f #ffffff #f2f2f2 #808080 #9b4d6f"},
+	{"name":"Vilet Dark","colors":"#9b4d6f #e8e8e8 #2c3441 #bbbbbb #9b4d6f"}
 ]

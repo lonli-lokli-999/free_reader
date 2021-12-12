@@ -50,7 +50,7 @@ const book_area = {
 //////////////////////////////////// tab bar
 const tab_bar =
 {
-	props: ['chapters', 'cover', 'book_name'],
+	props: ['chapters', 'cover', 'book_name', 'author', 'seria_name'],
 	
 	data: function()
 	{
@@ -155,6 +155,8 @@ const tab_bar =
 				<div class="tab book_info">
 					<img class="js-cover" v-if="cover" :src="cover" @click="viewCover">
 					<h2 class="book-name">{{ book_name }}</h2>
+					<p v-if="author">Автор: {{ author }}</p>
+					<p v-if="seria_name">Серия: {{ seria_name }}</p>
 				</div>
 				<footer class="tab-bar__footer">
 					<button class="tab-toggle-btn" @click="showTheTab" id="links">
@@ -189,7 +191,14 @@ export const main =
 	`
 		<main class="main-content-wrap" >
 			<div class="main-content conatiner">
-				<div v-if="book" is="tab_bar" :cover="book.cover" :chapters="chapters" :book_name="book.title"></div>
+				<div 
+					v-if="book"
+					is="tab_bar"
+					:cover="book.cover"
+					:chapters="chapters"
+					:book_name="book.title"
+					:author="book.author"
+					:seria_name="book.seria_name"></div>
 				<div 
 					v-if="book" 
 					is="book_area" 
@@ -218,7 +227,8 @@ export const main =
 	watch:
 	{
 		book()
-		{		
+		{	
+			console.log( this.book );	
 			let
 				chapters	= [];
 				

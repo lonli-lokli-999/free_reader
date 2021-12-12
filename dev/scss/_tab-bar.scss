@@ -39,17 +39,17 @@ height: 100%; }
 }	
 
 		.tab-bar__footer {
-		background: var( --translucent-bg );
+		background: var( --header-bg );
 		display: flex;  }
 
 			.tab-toggle-btn {
 			background: none;
-			color: var( --translucent-color );
+			color: var( --header-color );
 			padding: var( --system-padding ); }
 
 			.tab-toggle-btn:hover {
-			background: var( --translucent-color );
-			color: var( --translucent-bg ); }
+			background: var( --header-color );
+			color: var( --header-bg ); }
 		
 		.tab {
 		display: none;
@@ -68,6 +68,9 @@ height: 100%; }
 		.tab--active {
 		display: block;
 		animation: move-to-right .5s; }
+		
+			.tab p {
+			padding: 0 .5rem .5rem 0; }
 
 			.links {
 			flex: 1; }

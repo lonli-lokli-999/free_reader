@@ -305,7 +305,6 @@ const new_scheme =
 	{
 		return { 
 			translucent_color: '#ffffff',
-			translucent_bg: '#ffffff', 
 			header_bg: '#ffffff',
 			header_color: '#ffffff',
 			content_bg: '#ffffff',
@@ -321,7 +320,6 @@ const new_scheme =
 			<input class="window__inp-el" v-model="theme_name" placeholder="Введите имя темы">
 			
 			<div class="window__color-writer">
-				<color_input :name="'translucent_bg'" :clb="setColor"></color_input>
 				<color_input :name="'translucent_color'" :clb="setColor"></color_input>
 				<color_input :name="'header_bg'" :clb="setColor"></color_input>	
 				<color_input :name="'header_color'" :clb="setColor"></color_input>	
@@ -350,7 +348,7 @@ const new_scheme =
 				"user_themes" ,
 				{
 					name: this.theme_name,
-					colors: `${ this.header_bg } ${ this.header_color } ${ this.content_bg } ${ this.content_color } ${ this.translucent_color } ${ this.translucent_bg }`,
+					colors: `${ this.header_bg } ${ this.header_color } ${ this.content_bg } ${ this.content_color } ${ this.translucent_color }`,
 				 	user: true
 				}
 			);
@@ -361,7 +359,7 @@ const new_scheme =
 
 		preview()
 		{
-			activateTheme( `${ this.header_bg } ${ this.header_color } ${ this.content_bg } ${ this.content_color } ${ this.translucent_color } ${ this.translucent_bg }` );
+			activateTheme( `${ this.header_bg } ${ this.header_color } ${ this.content_bg } ${ this.content_color } ${ this.translucent_color }` );
 		}
 	},
 
@@ -583,7 +581,7 @@ data: function()
 		read( book )
 		{
 			let
-				{book_name, cover, main_url, _id } = book;
+				{book_name, cover, main_url, _id, author, seria_name } = book;
 
 			fetch( `/read/${ _id }` )
 				.then( res => res.text() )
@@ -592,12 +590,12 @@ data: function()
 						{
 							content: res,
 							cover: cover,
-							title: book_name
+							title: book_name,
+							author: author,
+							seria_name: seria_name
 						};
 						
 					this.$root.book = book;
-					
-					console.log( this.$root )
 				} )
 		},
 		
@@ -698,7 +696,7 @@ const my_books =
 		
 		booksUpdate()
 		{
-			this.my_books = LSModel.get( "books" );
+			this.my_books = LSModel.get( "books" ).sort( ( curent, next ) => curent.seria > next.seria ? 1 : -1 );
 		},
 
 		toggleDownloadsLinks( ev )
@@ -713,7 +711,7 @@ const my_books =
 		read( book )
 		{
 			let
-				{book_name, cover, main_url, _id } = book;
+				{book_name, cover, main_url, _id, author, seria_name } = book;
 
 			fetch( `/read/${ _id }` )
 				.then( res => res.text() )
@@ -722,7 +720,9 @@ const my_books =
 						{
 							content: res,
 							cover: cover,
-							title: book_name
+							title: book_name,
+							author: author,
+							seria_name: seria_name
 						};
 					
 					setTimeout( () => {

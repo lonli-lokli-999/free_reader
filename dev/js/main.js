@@ -78,8 +78,7 @@ window.activateTheme = colors =>
 	main_css_var.setProperty( '--header-color', colors[1] );
 	main_css_var.setProperty( '--content-bg', colors[2] );
 	main_css_var.setProperty( '--content-color', colors[3] );
-	main_css_var.setProperty( '--translucent-color', colors[4] );
-	main_css_var.setProperty( '--translucent-bg', colors[5] );
+	main_css_var.setProperty( '--translucent-color', colors[4] + "aa" );
 };
 
 window.msg = text =>
@@ -254,8 +253,6 @@ const app = new Vue({
 		{
 			book.progress = readingStatus.last( book.title );
 			this.book = book;
-			
-			console.log( book );
 		},
 
 		changeReadingStatus( new_reading_status )
