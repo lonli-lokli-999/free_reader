@@ -50,7 +50,7 @@ const book_area = {
 //////////////////////////////////// tab bar
 const tab_bar =
 {
-	props: ['chapters', 'cover', 'book_name', 'author', 'seria_name'],
+	props: ['chapters', 'cover', 'book_name', 'author', 'seria_name', 'anot'],
 	
 	data: function()
 	{
@@ -155,8 +155,10 @@ const tab_bar =
 				<div class="tab book_info">
 					<img class="js-cover" v-if="cover" :src="cover" @click="viewCover">
 					<h2 class="book-name">{{ book_name }}</h2>
-					<p v-if="author">Автор: {{ author }}</p>
-					<p v-if="seria_name">Серия: {{ seria_name }}</p>
+					<p v-if="author" class="tab-bar__info" >Автор: {{ author }}</p>
+					<p v-if="seria_name" class="tab-bar__info">Серия: {{ seria_name }}</p>
+					<p v-if="anot" class="tab-bar__info">Анотация:</p>
+					<font v-if="anot" v-html="anot" class="tab-bar__info"></font>
 				</div>
 				<footer class="tab-bar__footer">
 					<button class="tab-toggle-btn" @click="showTheTab" id="links">
@@ -198,6 +200,7 @@ export const main =
 					:chapters="chapters"
 					:book_name="book.title"
 					:author="book.author"
+					:anot="book.anot"
 					:seria_name="book.seria_name"></div>
 				<div 
 					v-if="book" 

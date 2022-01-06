@@ -68,9 +68,6 @@ height: 100%; }
 		.tab--active {
 		display: block;
 		animation: move-to-right .5s; }
-		
-			.tab p {
-			padding: 0 .5rem .5rem 0; }
 
 			.links {
 			flex: 1; }
@@ -100,5 +97,8 @@ height: 100%; }
 				.bookmark-del:hover {
 				color: var( --translucent-color ); }
 			
-		.book-name {
-		padding: .5rem; }
+		.book-name,
+		.tab-bar__info {
+		padding: .5rem .5rem 0;
+		display: block }
+		

@@ -581,7 +581,7 @@ data: function()
 		read( book )
 		{
 			let
-				{book_name, cover, main_url, _id, author, seria_name } = book;
+				{book_name, cover, main_url, _id, author, seria_name, anot } = book;
 
 			fetch( `/read/${ _id }` )
 				.then( res => res.text() )
@@ -592,7 +592,8 @@ data: function()
 							cover: cover,
 							title: book_name,
 							author: author,
-							seria_name: seria_name
+							seria_name: seria_name,
+							anot: anot
 						};
 						
 					this.$root.book = book;
@@ -711,7 +712,7 @@ const my_books =
 		read( book )
 		{
 			let
-				{book_name, cover, main_url, _id, author, seria_name } = book;
+				{book_name, cover, main_url, _id, author, seria_name, anot } = book;
 
 			fetch( `/read/${ _id }` )
 				.then( res => res.text() )
@@ -722,7 +723,8 @@ const my_books =
 							cover: cover,
 							title: book_name,
 							author: author,
-							seria_name: seria_name
+							seria_name: seria_name,
+							anot: anot
 						};
 					
 					setTimeout( () => {

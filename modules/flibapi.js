@@ -67,14 +67,17 @@ const flibapi =
 					author 		= book.author ? book.author[0].name[0] : '',
 					link		= `${this._main_url}${_id}`,
 					seria_obj	= book.link
-								.find( item => item['$'].href.indexOf( "/opds/sequencebooks" ) != -1  );
+								.find( item => item['$'].href.indexOf( "/opds/sequencebooks" ) != -1  ),
+					anot		= book.content ? book.content[0]._ : '';
 				
+				
+				anot = anot != '' ? anot.replace( /class=\"book\"/g, '' ) : '';
 				cover = cover ? `${main_url}${cover['$'].href}` : '';
 				seria = seria_obj ? seria_obj['$'].href.slice( seria_obj['$'].href.lastIndexOf( '/' ) + 1 ) : '';
 				_id = _id.replace( '/b/', '' );
 				seria_name = seria_obj && seria_obj.$.title ? seria_obj.$.title.match( /\"(.*)\"/ )[1] : "";
 					
-				return { book_name, _id, author, cover, link, seria, seria_name }
+				return { book_name, _id, author, cover, link, seria, seria_name, anot }
 			} );
 				
 				

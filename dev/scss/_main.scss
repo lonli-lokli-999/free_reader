@@ -177,14 +177,14 @@ transform: translate(0);
 }
 
     .set-page-btn {
-    color: var( --translucent-color );
-    background:  var( --content-bg );
+    color: var( --header-color );
+    background:  var( --header-bg );
     height: 50%;
     padding: 1rem; }
     
     .set-page-btn:hover {
-    color: var( --translucent-bg );
-    background:  var( --translucent-color ); }  
+    color: var( --header-bg );
+    background:  var( --header-color ); }  
 /*
  * book tipografy end
  *===========================================*/
