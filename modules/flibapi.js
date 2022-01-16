@@ -30,6 +30,19 @@ const flibapi =
 			});
 		} );
 	},
+	
+	getAuthor( author_id ) 
+	{
+		console.log( `${flibapi._main_url}/opds/author/${author_id}/time` );
+		
+		return new Promise(  function( resolve, reject ) {			
+			request( `${flibapi._main_url}/opds/author/${author_id}/time`, function (error, response, body) 
+			{
+				if( body )
+					flibapi.bodyParce( body, resolve );
+			});
+		} );
+	},
 
 	read( id )
 	{
@@ -65,11 +78,11 @@ const flibapi =
 					cover 		= book.link
 								.find( item => item['$'].type == 'image/jpeg'  ),
 					author 		= book.author ? book.author[0].name[0] : '',
+					author_id	= book.author ? book.author[0].uri[0].replace( '/a/', '' ) : '',
 					link		= `${this._main_url}${_id}`,
 					seria_obj	= book.link
 								.find( item => item['$'].href.indexOf( "/opds/sequencebooks" ) != -1  ),
 					anot		= book.content ? book.content[0]._ : '';
-				
 				
 				anot = anot != '' ? anot.replace( /class=\"book\"/g, '' ) : '';
 				cover = cover ? `${main_url}${cover['$'].href}` : '';
@@ -77,10 +90,9 @@ const flibapi =
 				_id = _id.replace( '/b/', '' );
 				seria_name = seria_obj && seria_obj.$.title ? seria_obj.$.title.match( /\"(.*)\"/ )[1] : "";
 					
-				return { book_name, _id, author, cover, link, seria, seria_name, anot }
+				return { book_name, _id, author, author_id, cover, link, seria, seria_name, anot }
 			} );
-				
-				
+					
 			resolve( { books, total, curent, step } );
 		})
 	},

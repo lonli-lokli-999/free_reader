@@ -79,6 +79,9 @@ window.activateTheme = colors =>
 	main_css_var.setProperty( '--content-bg', colors[2] );
 	main_css_var.setProperty( '--content-color', colors[3] );
 	main_css_var.setProperty( '--translucent-color', colors[4] + "aa" );
+	
+	console.log( colors[4] );
+	console.log( colors[4] + "aa" );
 };
 
 window.msg = text =>

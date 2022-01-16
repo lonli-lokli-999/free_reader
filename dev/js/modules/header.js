@@ -512,7 +512,13 @@ data: function()
 						</div>
 					</div>					
 					<button class="footer__btn" @click="share( book )"><i class="fa fa-share-alt"></i></button>
-					<button v-if="book.seria != ''" class="footer__btn" @click="getTheSeria( book.seria )"><i class="fa fa-angle-double-right"></i></button>
+					<div class="book__downloads">
+						<button class="footer__btn" @click="toggleDownloadsLinks"><i class="fa fa-angle-double-right"></i></button>
+						<div class="book__downloads-links">
+							<button class="footer__btn" v-if="book.seria != ''" class="footer__btn" @click="getTheSeria( book.seria )">Серия</button>
+							<button class="footer__btn" v-if="book.author_id != ''" class="footer__btn" @click="getTheAuthor( book.author_id )">Автор</button>
+						</div>
+					</div>	
 				</footer>
 			</div>
 		</div>
@@ -551,6 +557,20 @@ data: function()
 				} )
 		},
 		
+		getTheAuthor( author_id )
+		{		
+			console.log( `/author/${ author_id }` );
+							
+			fetch( `/author/${ author_id }` )
+				.then( res => res.json() )
+				.then( res => {
+					this.books = res.books;
+					this.total = res.total;
+					this.curent = 0;
+					this.step = res.step;
+				} )
+		},
+		
 		changePage( next_page )
 		{			
 			fetch( `/search/${ this.search_str }/${next_page}` )
@@ -575,6 +595,8 @@ data: function()
 					this.total = res.total;
 					this.curent = 0;
 					this.step = res.step;
+					
+					console.log( res.books );
 				} )
 		},
 

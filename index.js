@@ -41,6 +41,16 @@ app.get('/seria/:seria_id', (req, res) => {
 		} )
 });
 
+app.get('/author/:author_id', (req, res) => {
+	let
+		{ author_id } = req.params;
+
+	flibapi.getAuthor( author_id )
+		.then( result => {
+			res.send( JSON.stringify( result ) );
+		} )
+});
+
 app.get('/read/:id/', (req, res) => {
 	let
 		{id} = req.params;
